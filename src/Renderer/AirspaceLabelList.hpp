@@ -55,6 +55,16 @@ public:
     labels.clear();
   }
 
+#if _AUG_MSC
+  // TODO(August2111):  this should be used much better....
+  const Label* begin() const {
+    return &labels.begin().operator*();
+  }
+
+  const Label* end() const {
+    return &labels.end().operator*();
+  }
+#else
   const Label *begin() const {
     return labels.begin();
   }
@@ -62,6 +72,7 @@ public:
   const Label *end() const {
     return labels.end();
   }
+#endif
 
   const Label &operator[](unsigned i) const {
     return labels[i];

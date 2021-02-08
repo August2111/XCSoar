@@ -72,7 +72,7 @@ public:
 #if _AUG_MSC
   // TODO(August2111):  this should be used much better....
   const Label* begin() const {
-    return &labels.end().operator*();
+    return &labels.begin().operator*();
   }
 
   const Label* end() const {
