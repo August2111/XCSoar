@@ -128,7 +128,11 @@ double
 TeamCode::GetRange() const
 {
   // Get last three values from teamcode (3-5)
+#ifdef _MSC_VER
+  unsigned value = GetValueFromTeamCode(code.c_str() + 2, 3);
+#else
   unsigned value = GetValueFromTeamCode(code.begin() + 2, 3);
+#endif
   return value * 100;
 }
 
