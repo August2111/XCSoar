@@ -24,6 +24,87 @@ Copyright_License {
 #ifndef COMPILER_H
 #define COMPILER_H
 
+#ifdef _WIN32
+
+#if !defined(_WIN32_WINNT)
+#   define _WIN32_WINNT 0x0A00  // _AUG! Windows7 or above
+#elif _WIN32_WINNT < 0xA00
+
+#endif
+
+#ifdef _MSC_VER
+#if __cplusplus >= 201700L  // with C++17 it's this deprecated
+                            // struct not available anymore
+#   include "util/xcs_functional.hpp"
+#endif
+#   include <io.h>
+#endif
+#endif
+
+#ifdef _MSC_VER
+
+#   include   "corecrt_math_defines.h"
+
+#define STRING2(x) #x
+#define STRING(x) STRING2(x)
+
+#define CLANG_OR_GCC_VERSION(x, y)  0
+#define GCC_CHECK_VERSION(x, y)     0
+#define GCC_OLDER_THAN(x, y)        1  // This isn't a (new!) GCC
+#define CLANG_CHECK_VERSION(x, y)   0
+
+#define DT_UNDERLINE 0  // gibt es in WinUser.h nicht!
+
+#define __attribute__(x)
+
+#define gcc_const
+#define gcc_deprecated
+#define gcc_may_alias
+#define gcc_malloc
+#define gcc_noreturn
+#define gcc_packed
+#define gcc_printf(a,b)
+// aug:format(printf, a, b)
+#define gcc_pure  //  aug:
+#define gcc_sentinel    //  aug: sentinel
+#define gcc_unused   //  aug: unused
+#define gcc_warn_unused_result  //  aug: warn_unused_result
+
+#define gcc_nonnull(...)
+// __assume(__VA_ARGS__ != nullptr)
+#define gcc_nonnull_all   // __assume(!nullptr)
+#define gcc_returns_nonnull // returns_nonnull
+
+#define gcc_likely(x)  (x)
+//  aug: __builtin_expect (!!(x), 1)
+#define gcc_unlikely(x)  (x)
+//  aug: __builtin_expect (!!(x), 0)
+
+#define gcc_aligned(n)
+//  aug: aligned(n)
+
+#define gcc_visibility_hidden  //  aug: visibility("hidden")
+#define gcc_visibility_default  //  aug: visibility("default")
+
+#define gcc_always_inline
+// inline  // wird dann mehrfach verwendet... //  aug: always_inline
+
+
+// unuse deprecated functions:
+#define strncasecmp(a, b, n)  _strnicmp(a, b, n)
+#define strcasecmp(a, b)      _stricmp(a, b)
+#define strdup(a)             _strdup(a)
+#define wcsdup(a)             _wcsdup(a)
+
+// TODO(August2111): where is this defined (on GCC)?
+#ifndef ssize_t
+typedef size_t   ssize_t;
+#endif  // ssize_t
+
+// make BOUND_NOEXCEPT avalid, not possible with MSVC?
+#define BOUND_NOEXCEPT
+#else  // _MSC_VER
+
 #define GCC_MAKE_VERSION(major, minor, patchlevel) ((major) * 10000 + (minor) * 100 + patchlevel)
 
 #ifdef __GNUC__
@@ -69,7 +150,12 @@ Copyright_License {
 #  if GCC_OLDER_THAN(6,0)
 #    error Sorry, your gcc version is too old.  You need at least version 6.
 #  endif
-#else
+#elif defined(_MSV_VER)
+// #  if GCC_OLDER_THAN(6,0)
+#  if _MSV_VER < 1900  // Visual Studio 2017
+#    error Sorry, your gcc version is too old.  You need at least version 6.
+#  endif
+#else 
 #  warning Untested compiler.  Use at your own risk!
 #endif
 
@@ -139,7 +225,11 @@ Copyright_License {
 
 #define gcc_always_inline inline
 
+#define BOUND_NOEXCEPT  noexcept    // not possible with MSVC?
+
 #endif
+
+#endif  // _MSC_VER
 
 #if CLANG_OR_GCC_VERSION(4,3)
 
