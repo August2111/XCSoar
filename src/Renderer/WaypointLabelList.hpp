@@ -86,7 +86,7 @@ public:
   const Label *end() const noexcept {
     return labels.end();
   }
-};
 #endif
+};
 
 #endif
