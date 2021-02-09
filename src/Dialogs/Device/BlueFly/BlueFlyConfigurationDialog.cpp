@@ -120,7 +120,14 @@ dlgConfigurationBlueFlyVarioShowModal(Device &_device)
   WidgetDialog dialog(WidgetDialog::Auto{}, UIGlobals::GetMainWindow(),
                       look,
                       _T("BlueFly Vario"),
-                      new BlueFlyConfigurationWidget(look, dialog, device));
+#ifdef _MSC_VER  // TODO(August2111)
+    // UP TO NOW not possible yet in MSVC
+    // this isn't possible with MSVC!
+    // TODO(August2111): How I can solve this straight code design?
+    nullptr);  // new BlueFlyConfigurationWidget(look, dialog, device));
+#else
+    new BlueFlyConfigurationWidget(look, dialog, device));
+#endif
 
   dialog.AddButton(_("Cancel"), mrCancel);
   dialog.ShowModal();
