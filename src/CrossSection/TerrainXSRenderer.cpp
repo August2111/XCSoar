@@ -58,7 +58,11 @@ TerrainXSRenderer::Draw(Canvas &canvas, const ChartRenderer &chart,
       points.append() = chart.ToScreen(center_distance, hmin);
       points.append() = chart.ToScreen(center_distance, hmin);
 
+#ifdef _MSC_VER
+      DrawPolygon(canvas, last_type, &(*points.begin()), points.size());
+#else
       DrawPolygon(canvas, last_type, points.begin(), points.size());
+#endif
     }
 
     if (type != TerrainType::UNKNOWN) {
@@ -82,7 +86,11 @@ TerrainXSRenderer::Draw(Canvas &canvas, const ChartRenderer &chart,
         points.append() = chart.ToScreen(distance, h);
         points.append() = chart.ToScreen(distance, hmin);
 
+#ifdef _MSC_VER
+        DrawPolygon(canvas, type, &(*points.begin()), points.size());
+#else
         DrawPolygon(canvas, type, points.begin(), points.size());
+#endif
       } else if (type == last_type && j != 0) {
         // Add single point to polygon
         points.append() = chart.ToScreen(distance, h);
