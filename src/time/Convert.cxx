@@ -31,11 +31,13 @@
  */
 
 #include "Convert.hxx"
-
 #include <stdexcept>
-
 #include <time.h>
-#include <sys/time.h> /* for struct timeval */
+#ifdef _MSC_VER
+#   include "winsock2.h"  /* for struct timeval */
+#else
+#   include <sys/time.h>  /* for struct timeval */
+#endif
 
 struct tm
 GmTime(std::chrono::system_clock::time_point tp)
