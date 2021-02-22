@@ -24,13 +24,14 @@
 
 #include <cassert>
 
-#include <unistd.h>
 
 #ifdef _WIN32
 #include "net/IPv4Address.hxx"
 #include "net/StaticSocketAddress.hxx"
 #include "net/UniqueSocketDescriptor.hxx"
 #include "net/SocketError.hxx"
+#else
+#   include <unistd.h>
 #endif
 
 #ifdef _WIN32
