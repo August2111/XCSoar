@@ -40,6 +40,10 @@ class StaticSocketAddress;
 class IPv4Address;
 class IPv6Address;
 
+#ifdef _AUG_MSC
+  typedef size_t ssize_t;
+#endif
+
 /**
  * An OO wrapper for a UNIX socket descriptor.
  */
