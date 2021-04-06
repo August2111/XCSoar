@@ -25,6 +25,10 @@ Copyright_License {
 #define DIJKSTRA_HPP
 
 #include "util/ReservablePriorityQueue.hpp"
+#ifdef _AUG_MSC
+#   include "util/xcs_functional.hpp"
+#endif  // _AUG_MSC
+
 
 #define DIJKSTRA_MINMAX_OFFSET 134217727
 
