@@ -58,7 +58,7 @@ TerrainXSRenderer::Draw(Canvas &canvas, const ChartRenderer &chart,
       points.append() = chart.ToScreen(center_distance, hmin);
       points.append() = chart.ToScreen(center_distance, hmin);
 
-#ifdef _MSC_VER  // TODO(August2111)
+#ifdef _AUG_MSC  // TODO(August2111)
       DrawPolygon(canvas, last_type, &(*points.begin()), points.size());
 #else
       DrawPolygon(canvas, last_type, points.begin(), points.size());
@@ -86,7 +86,7 @@ TerrainXSRenderer::Draw(Canvas &canvas, const ChartRenderer &chart,
         points.append() = chart.ToScreen(distance, h);
         points.append() = chart.ToScreen(distance, hmin);
 
-#ifdef _MSC_VER  // TODO(August2111)
+#ifdef _AUG_MSC  // TODO(August2111)
         DrawPolygon(canvas, type, &(*points.begin()), points.size());
 #else
         DrawPolygon(canvas, type, points.begin(), points.size());
