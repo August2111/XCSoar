@@ -29,99 +29,18 @@ Copyright_License {
 
 #include <cassert>
 
-#ifdef _AUG_MSC  // auch für MinGW & Co?...
-// "hat bereits einen Funktionsrumpf"
-// Bitmap::Bitmap() {
-// 
-// }
-
-Bitmap::Bitmap(Bitmap&& src)
-#   ifdef USE_MEMORY_CANVAS
-#       if _AUG_MSC
+Bitmap::Bitmap(Bitmap &&src)
+  :bitmap(src.bitmap)
 {
-  // TODO!!!!!!!!!!!!!!! bitmap gibt es nicht!
-}
-#       else
-  :bitmap(src.bitmap) {
   src.bitmap = nullptr;
 }
-#       endif
-// #endif
-#   else
-{
-  // TODO!!!!!!!!!!!!!!! bitmap gibt es nicht!
-}
-#   endif
-#endif
 
-
-#ifdef _AUG_MSC  // Eingeführt, weil unter Windows LoadResource nicht geht ;-(
-#define WITH_BOOST_GIL    1
-#if WITH_BOOST_GIL
-#   include <iostream>
-#   include "boost/gil/extension/io/png.hpp"
-#   include "boost/gil.hpp"
-#   include "boost/gil/io/base.hpp"
-#endif
-
-HBITMAP
-test_gil(std::string filename) {
-    HBITMAP oBitmap = nullptr;
-    DIBSECTION d;
-    /*  geht nicht !!!!!!!!!!!!!!!!!!!!!!! */
-#if WITH_BOOST_GIL
-    boost::gil::rgb8_image_t image;
-    try {
-        boost::gil::read_image(filename, image, boost::gil::png_tag());
-      // boost::gil::read_image(filename, image, boost::gil::png_tag());
-    }
-    catch (...) {
-//        LogFormat(_T("boost exception!"));
-    }
-
-    if (image.width() > 0) {
-        BITMAPINFO bi24BitInfo; //testing, populate to match rgb8_image_t
-        memset(&bi24BitInfo, 0, sizeof(BITMAPINFO));
-        bi24BitInfo.bmiHeader.biSize = sizeof(bi24BitInfo.bmiHeader);
-        bi24BitInfo.bmiHeader.biBitCount = 24; // rgb 8 bytes for each  component(3)
-        bi24BitInfo.bmiHeader.biCompression = BI_RGB;// rgb = 3 components
-        bi24BitInfo.bmiHeader.biPlanes = 1;
-        bi24BitInfo.bmiHeader.biWidth = image.width(); // = d.dsBm.bmWidth
-        bi24BitInfo.bmiHeader.biHeight = image.height();  //  = d.dsBm.bmHeight
-
-        oBitmap = ::CreateDIBSection(NULL, &bi24BitInfo,
-            DIB_RGB_COLORS, 0, 0, 0);
-
-        uint32_t nBytes = ::GetObject(oBitmap, sizeof(DIBSECTION), &d);
-
-
-#if 1
-        memcpy(d.dsBm.bmBits, &image, d.dsBmih.biSizeImage);
-#else
-        for (size_t l = image.height(); l-- > 0; ) {
-            memcpy((char*)d.dsBm.bmBits + l * d.dsBmih.biBitCount * image.width(),
-                &image, d.dsBmih.biBitCount * image.width());
-        }
-#endif
-    }
-#endif  // WITH_BOOST_GIL
-
-    return oBitmap;
-}
-
-bool Bitmap::LoadFile(Path path) {
-    // std::string img_filename = ;
-    bitmap = (HBITMAP)LoadImageA(nullptr, path.ToUTF8().c_str(), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
-    return bitmap;
-}
-#else  // _AUG_MSC
 bool
 Bitmap::LoadFile(Path path)
 {
   bitmap = GdiLoadImage(path.c_str());
   return IsDefined();
 }
-#endif  // _AUG_MSC
 
 void
 Bitmap::Reset()
@@ -133,9 +52,7 @@ Bitmap::Reset()
     bool success =
 #endif
       ::DeleteObject(bitmap);
-#if  !_AUG_MSC  // strirbt hier momentan ???
     assert(success);
-#endif
 
     bitmap = nullptr;
   }
