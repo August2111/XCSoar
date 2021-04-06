@@ -194,6 +194,9 @@ public:
 #ifndef ANDROID
   bool Load(ConstBuffer<void> buffer, Type type=Type::STANDARD);
 #endif
+#else
+  bool ToFile(const TCHAR* filename);
+
 #endif
 
   bool Load(ResourceId id, Type type=Type::STANDARD);
