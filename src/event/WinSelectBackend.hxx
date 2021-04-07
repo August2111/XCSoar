@@ -26,8 +26,6 @@
 #include <cassert>
 #include <unordered_map>
 
-#include <winsock2.h>
-
 class SocketSet
 {
 	fd_set set;
