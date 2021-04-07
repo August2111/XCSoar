@@ -20,6 +20,7 @@
 #ifndef EVENT_WINSELECT_EVENTS_HXX
 #define EVENT_WINSELECT_EVENTS_HXX
 
+#include <winsock2.h>
 #include <windows.h>
 
 /* ERROR is a WIN32 macro that poisons our namespace; this is a kludge
