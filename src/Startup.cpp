@@ -69,7 +69,6 @@ Copyright_License {
 #include "io/FileCache.hpp"
 #include "io/async/AsioThread.hpp"
 #include "io/async/GlobalAsioThread.hpp"
-#include "net/http/Init.hpp"
 #include "net/http/DownloadManager.hpp"
 #include "Hardware/DisplayDPI.hpp"
 #include "Hardware/DisplayGlue.hpp"
@@ -457,7 +456,8 @@ Startup()
 
   PageActions::Update();
 
-#ifdef HAVE_TRACKING
+#if defined(HAVE_TRACKING)  && !defined(_MSC_VER)  // TODO(August2111)
+  // -> exception in BindMethod.hxx!
   tracking = new TrackingGlue(*asio_thread, *Net::curl);
   tracking->SetSettings(computer_settings.tracking);
 
