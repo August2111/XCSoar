@@ -69,7 +69,17 @@ public:
            bool isWatchedWaypoint) noexcept;
   void Sort() noexcept;
 
-  const Label *begin() const noexcept {
+#if _AUG_MSC
+  // TODO(August2111):  this should be used much better....
+  const Label* begin() const {
+    return &labels.end().operator*();
+  }
+
+  const Label* end() const {
+    return &labels.end().operator*();
+  }
+#else
+  const Label *begin() const {
     return labels.begin();
   }
 
@@ -77,5 +87,6 @@ public:
     return labels.end();
   }
 };
+#endif
 
 #endif
