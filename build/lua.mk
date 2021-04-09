@@ -35,6 +35,7 @@ LUA_SOURCES = \
 	$(SRC)/lua/Tracking.cpp \
 	$(SRC)/lua/Replay.cpp \
 	$(SRC)/lua/InputEvent.cpp \
+	$(SRC)/lua/Cloud.cpp \
 
 LUA_CPPFLAGS_INTERNAL = $(LIBLUA_CPPFLAGS) $(SCREEN_CPPFLAGS)
 LUA_LDLIBS = $(LIBLUA_LDLIBS)

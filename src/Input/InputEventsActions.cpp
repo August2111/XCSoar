@@ -84,6 +84,8 @@ doc/html/advanced/input/ALL		http://xcsoar.sourceforge.net/advanced/input/
 #include "MapWindow/GlueMapWindow.hpp"
 #include "Simulator.hpp"
 #include "Formatter/TimeFormatter.hpp"
+#include "Cloud/IGCFileUpload.hpp"   // WeGlide
+#include "Cloud/weglide/FileToWeGlide.hpp"   // WeGlide
 
 #include <cassert>
 #include <tchar.h>
@@ -694,4 +696,32 @@ void
 InputEvents::eventExchangeFrequencies(const TCHAR *misc)
 {
   XCSoarInterface::ExchangeRadioFrequencies(true);
+}
+//-----------------------------------------------------------------------------
+// new August2111
+void
+InputEvents::eventUploadFile(const TCHAR *misc) {
+   // TODO(August2111) this is only for testing purpose (F9 key)
+   // TODO(August2111) this is only a private local file!
+  IGCFileUpload(IGCFileUpload::WEGLIDE).PostIGCFile(
+#ifdef _WIN32
+    Path(_T("flights/2020-09-19_Twin/09JGE518.IGC")), 511, 295);  // Twin-Flights 1-9,  Twin2 = 295
+#else
+  //   Path(_T("flights/073VF4V1.igc")));
+  //   Path(_T("flights/2020_ZP/09BVF4V1.igc")));
+  Path(_T("flights/2020-09-19_Twin/09JGE511.IGC")), 0, 295);  // Twin-Flights 1-9,  Twin2 = 295
+#endif
+}
+//-----------------------------------------------------------------------------
+// new August2111
+void
+InputEvents::eventDownloadTask(const TCHAR *misc) {
+   // TODO(August2111) this is only for testing purpose (F11 key)
+    FileToWeGlide().DownloadTask();
+}
+//-----------------------------------------------------------------------------
+void
+InputEvents::eventLuaCall(const TCHAR *misc) {
+   // TODO(August2111) this is only for testing purpose (F10 key)
+  ShowFileManager();
 }
