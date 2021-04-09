@@ -281,6 +281,8 @@ XCSOAR_SOURCES := \
 	$(SRC)/Logger/LoggerEPE.cpp \
 	$(SRC)/Logger/LoggerImpl.cpp \
 	$(SRC)/Logger/IGCFileCleanup.cpp \
+	$(SRC)/Cloud/IGCFileUpload.cpp \
+	$(SRC)/Cloud/weglide/FileToWeGlide.cpp \
 	$(SRC)/Cloud/weglide/WeGlideSettings.cpp \
 	$(SRC)/IGC/IGCFix.cpp \
 	$(SRC)/IGC/IGCWriter.cpp \
