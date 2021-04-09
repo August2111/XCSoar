@@ -25,6 +25,9 @@ Copyright_License {
 #define XCSOAR_BROKEN_DATE_HPP
 
 #include "util/Compiler.h"
+#include <tchar.h>
+
+#include "util/StaticString.hxx"
 
 #include <type_traits>
 
@@ -59,6 +62,8 @@ struct BrokenDate {
    * Non-initializing default constructor.
    */
   BrokenDate() = default;
+
+  BrokenDate(const TCHAR* date_string);
 
   constexpr
   BrokenDate(unsigned _year, unsigned _month, unsigned _day)
@@ -115,6 +120,10 @@ struct BrokenDate {
   void IncrementDay();
 
   void DecrementDay();
+
+  StaticString<20> c_str();
+
+  StaticString<20> Format(StaticString<20> format);
 
   /**
    * Returns the number of calendar days that have passed since the

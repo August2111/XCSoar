@@ -26,6 +26,32 @@ Copyright_License {
 #include "Calendar.hxx"
 
 #include <cassert>
+#include <vector>
+#include <algorithm>
+#include "boost/algorithm/string.hpp"
+
+#ifdef _UNICODE
+typedef std::vector<std::wstring> StringVector;
+#else
+typedef std::vector<std::string> StringVector;
+#endif
+
+BrokenDate::BrokenDate(const TCHAR* date_string) {
+  StringVector strs;
+  boost::split(strs, date_string, boost::is_any_of(L"/-."));
+  if (strs.size() == 3) {
+    if (strs.at(0).size() >= 4) {
+      year = std::stoi(strs.at(0));
+      month = std::stoi(strs.at(1));
+      day = std::stoi(strs.at(2));
+    }
+    else {
+      year = std::stoi(strs.at(2));
+      month = std::stoi(strs.at(1));
+      day = std::stoi(strs.at(0));
+    }
+  }
+}
 
 BrokenDate
 BrokenDate::TodayUTC()
@@ -89,4 +115,25 @@ BrokenDate::DaysSince(const BrokenDate &other) const
   const int64_t b = BrokenDateTime(other, midnight).ToUnixTimeUTC();
   const int64_t delta = a - b;
   return int(delta / SECONDS_PER_DAY);
+}
+
+StaticString<20>
+BrokenDate::c_str() {
+  StaticString<20> date_string;
+  date_string.Format(_T("%04d-%02d-%02d"), year, month, day);
+  return date_string;
+}
+
+StaticString<20>
+BrokenDate::Format(StaticString<20> format) {
+  StaticString<20> date_string;
+  // TODO(August2111): make a really format dependend output
+  if (format == _T("DD.mm.YYYY")) 
+    date_string.Format(_T("%02d.%02.%04d"), day, month, year);
+  else if (format == _T("YYYY-mm-DD")) 
+    date_string.Format(_T("%04d-%02-%02d"), year, month, day);
+  else
+    date_string.Format(_T("not defined format: %s"), format);  // TODO(August2111): 
+                // Format()- error without arglist
+  return date_string;
 }
