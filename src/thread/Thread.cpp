@@ -24,6 +24,7 @@ Copyright_License {
 #include "thread/Thread.hpp"
 #include "Name.hpp"
 #include "Util.hpp"
+#include "LogFile.hpp"
 
 #ifdef ANDROID
 #include "java/Global.hxx"
@@ -89,7 +90,10 @@ Thread::Join() noexcept
   pthread_join(handle, nullptr);
   defined = false;
 #else
-  ::WaitForSingleObject(handle, INFINITE);
+  DWORD result = ::WaitForSingleObject(handle, 1000);
+  if (result != WAIT_OBJECT_0) {  // TODO(August2111): Too much? INFINITE);
+      LogFormat(_T("WaitForSingleObject with error %d"), result);
+  }
   ::CloseHandle(handle);
   handle = nullptr;
 #endif
