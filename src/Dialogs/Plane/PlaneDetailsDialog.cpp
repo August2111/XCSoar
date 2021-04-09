@@ -42,6 +42,7 @@ class PlaneEditWidget final
     MAX_BALLAST,
     DUMP_TIME,
     MAX_SPEED,
+    WEGLIDE_ID,
   };
 
   WndForm *dialog;
@@ -128,6 +129,11 @@ PlaneEditWidget::Prepare(ContainerWindow &parent, const PixelRect &rc) noexcept
   AddFloat(_("Max. Cruise Speed"), nullptr,
            _T("%.0f %s"), _T("%.0f"), 0, 300, 5,
            false, UnitGroup::HORIZONTAL_SPEED, plane.max_speed);
+  /* TODO: this should be a select list from https://api.weglide.org/v1/aircraft */
+  AddInteger(_("WeGlide Type ID"), nullptr,
+             _T("%u"), _T("%u"),
+             0, 1000, 1,
+             plane.weglide_aircraft_type);
 
   UpdateCaption();
   UpdatePolarButton();
@@ -141,6 +147,7 @@ PlaneEditWidget::Save(bool &_changed) noexcept
   changed |= SaveValue(REGISTRATION, plane.registration);
   changed |= SaveValue(COMPETITION_ID, plane.competition_id);
   changed |= SaveValue(TYPE, plane.type);
+  changed |= SaveValue(WEGLIDE_ID, plane.weglide_aircraft_type);
   changed |= SaveValue(HANDICAP, plane.handicap);
   changed |= SaveValue(WING_AREA, plane.wing_area);
   changed |= SaveValue(MAX_BALLAST, plane.max_ballast);

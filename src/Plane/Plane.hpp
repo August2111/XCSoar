@@ -33,6 +33,8 @@ struct Plane
   StaticString<6> competition_id;
   StaticString<32> type;
 
+  unsigned weglide_aircraft_type; // from https://api.weglide.org/v1/aircraft
+
   StaticString<32> polar_name;
 
   PolarShape polar_shape;

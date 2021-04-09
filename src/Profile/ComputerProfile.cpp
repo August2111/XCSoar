@@ -40,6 +40,7 @@ namespace Profile {
   static void Load(const ProfileMap &map, FeaturesSettings &settings);
   static void Load(const ProfileMap &map, CirclingSettings &settings);
   static void Load(const ProfileMap &map, WaveSettings &settings);
+  static void Load(const ProfileMap &map, WeGlideSettings &settings);
 };
 
 void
@@ -83,6 +84,23 @@ Profile::Load(const ProfileMap &map, LoggerSettings &settings)
   map.Get(ProfileKeys::CoPilotName, settings.copilot_name);
   map.Get(ProfileKeys::EnableFlightLogger, settings.enable_flight_logger);
   map.Get(ProfileKeys::EnableNMEALogger, settings.enable_nmea_logger);
+}
+
+void
+Profile::Load(const ProfileMap &map, WeGlideSettings &settings)
+{
+    bool bvalue;
+    settings.enabled = map.Get(ProfileKeys::WeGlideEnabled, bvalue)
+        ? (bvalue ? TriState::TRUE : TriState::FALSE)
+        : TriState::UNKNOWN;
+
+  map.Get(ProfileKeys::WeGlidePilotID, settings.pilot_id);
+  map.Get(ProfileKeys::WeGlidePilotName, settings.pilot_name);
+  map.Get(ProfileKeys::WeGlidePilotKey, settings.pilot_key);
+
+  StaticString<20> date_string;
+  map.Get(ProfileKeys::WeGlidePilotDob, date_string);  // settings.weglide_pilot_dob);
+  settings.pilot_dob = BrokenDate(date_string);
 }
 
 void
@@ -169,6 +187,7 @@ Profile::Load(const ProfileMap &map, ComputerSettings &settings)
   Load(map, settings.task);
   Load(map, settings.contest);
   Load(map, settings.logger);
+  Load(map, settings.weglide);
 
 #ifdef HAVE_TRACKING
   Load(map, settings.tracking);

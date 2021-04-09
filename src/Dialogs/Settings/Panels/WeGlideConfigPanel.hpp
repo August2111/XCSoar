@@ -21,14 +21,14 @@ Copyright_License {
 }
 */
 
-#ifndef XCSOAR_NET_FEATURES_HPP
-#define XCSOAR_NET_FEATURES_HPP
+#ifndef WEGLIDE_CONFIG_PANEL_HPP
+#define WEGLIDE_CONFIG_PANEL_HPP
 
-#define HAVE_HTTP
+#include <memory>
 
-#ifdef HAVE_HTTP
-#define HAVE_DOWNLOAD_MANAGER
-#define HAVE_WEGLIDE
-#endif
+class Widget;
 
-#endif
+std::unique_ptr<Widget>
+CreateWeGlideConfigPanel();
+
+#endif  // WEGLIDE_CONFIG_PANEL_HPP

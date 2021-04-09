@@ -21,14 +21,16 @@ Copyright_License {
 }
 */
 
-#ifndef XCSOAR_NET_FEATURES_HPP
-#define XCSOAR_NET_FEATURES_HPP
+#include "WeGlideSettings.hpp"
 
-#define HAVE_HTTP
+void
+WeGlideSettings::SetDefaults()
+{
+  // can be different from logger settings!
+  pilot_name.clear();
+  copilot_name.clear();
 
-#ifdef HAVE_HTTP
-#define HAVE_DOWNLOAD_MANAGER
-#define HAVE_WEGLIDE
-#endif
-
-#endif
+  enabled = TriState::UNKNOWN;
+  
+  default_url = _T("https://api.weglide.org/v1");
+}

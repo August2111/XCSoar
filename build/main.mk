@@ -110,6 +110,7 @@ DIALOG_SOURCES = \
 	$(SRC)/Dialogs/Settings/Panels/TrackingConfigPanel.cpp \
 	$(SRC)/Dialogs/Settings/Panels/CloudConfigPanel.cpp \
 	$(SRC)/Dialogs/Settings/Panels/WeatherConfigPanel.cpp \
+	$(SRC)/Dialogs/Settings/Panels/WeGlideConfigPanel.cpp \
 	\
 	$(SRC)/Dialogs/Task/Widgets/ObservationZoneEditWidget.cpp \
 	$(SRC)/Dialogs/Task/Widgets/CylinderZoneEditWidget.cpp \
@@ -280,6 +281,7 @@ XCSOAR_SOURCES := \
 	$(SRC)/Logger/LoggerEPE.cpp \
 	$(SRC)/Logger/LoggerImpl.cpp \
 	$(SRC)/Logger/IGCFileCleanup.cpp \
+	$(SRC)/Cloud/weglide/WeGlideSettings.cpp \
 	$(SRC)/IGC/IGCFix.cpp \
 	$(SRC)/IGC/IGCWriter.cpp \
 	$(SRC)/IGC/IGCString.cpp \

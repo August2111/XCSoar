@@ -95,6 +95,17 @@ const char WatchedWaypointFile[] = "WatchedWPFile"; // pL
 const char LanguageFile[] = "LanguageFile"; // pL
 const char InputFile[] = "InputFile"; // pL
 const char PilotName[] = "PilotName";
+const char WeGlideEnabled[] = "WeGlideEnabled";
+
+const char WeGlidePilotID[] = "WeGlidePilotID";
+const char WeGlidePilotName[] = "WeGlidePilotName";
+const char WeGlidePilotDob[] = "WeGlidePilotDob";
+const char WeGlidePilotKey[] = "WeGlidePilotKey";
+const char WeGlideCoPilotName[] = "WeGlideCoPilotName";
+const char WeGlideCoPilotDob[] = "WeGlideCoPilotDob";
+
+const char WeGlideAircraftType[] = "WeGlideAircraftType";
+
 const char CoPilotName[] = "CoPilotName";
 const char AircraftType[] = "AircraftType";
 const char AircraftReg[] = "AircraftReg";

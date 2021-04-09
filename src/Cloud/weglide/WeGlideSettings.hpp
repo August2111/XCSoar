@@ -21,14 +21,43 @@ Copyright_License {
 }
 */
 
-#ifndef XCSOAR_NET_FEATURES_HPP
-#define XCSOAR_NET_FEATURES_HPP
+#ifndef XCSOAR_CLOUD_WEGLIDE_WEGLIDESETTINGS_HPP
+#define XCSOAR_CLOUD_WEGLIDE_WEGLIDESETTINGS_HPP
 
-#define HAVE_HTTP
+#include "util/StaticString.hxx"
+#include "util/TriState.hpp"
+#include "time/BrokenDate.hpp"
 
-#ifdef HAVE_HTTP
-#define HAVE_DOWNLOAD_MANAGER
-#define HAVE_WEGLIDE
-#endif
+#include <cstdint>
+#include <tchar.h>
 
-#endif
+/**
+ * WeGlide settings
+ */
+struct WeGlideSettings {
+  /**
+   * Enable the Transfer
+   */
+  TriState enabled;
+
+  /** Logger interval in cruise mode */
+  uint16_t time_step_cruise;
+
+
+  // hard coded yet, maybe WeGlide change this in the future, then you have to
+  // make it setable!
+  StaticString<64> default_url;
+
+  StaticString<64> pilot_name;
+  StaticString<10>  pilot_id;    //  better: uint32_t 
+  StaticString<10>  copilot_id;  //  better: uint32_t 
+  BrokenDate        pilot_dob;
+  BrokenDate        copilot_dob;
+  StaticString<20>  pilot_key;
+
+  StaticString<64> copilot_name;
+
+  void SetDefaults();
+};
+
+#endif  // XCSOAR_CLOUD_WEGLIDE_WEGLIDESETTINGS_HPP
