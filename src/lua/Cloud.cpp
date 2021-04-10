@@ -20,7 +20,7 @@ l_cloud_index(lua_State* L)
   if (name == nullptr)
     return 0;
   else if (StringIsEqual(name, "pilot_name")) {
-    Lua::Push(L, "Uwe Augustin");
+    Lua::Push(L, "Uwe Augustin");  // TODO(August2111) REMOVE!!!
   }
   else
     return 0;
