@@ -193,6 +193,24 @@ event=Mode default
 
 mode=default
 type=key
+data=F9
+event=UploadFile default
+event=Mode default
+
+mode=default
+type=key
+data=F10
+event=LuaCall default
+event=Mode default
+
+mode=default
+type=key
+data=F11
+event=DownloadTask XXX
+event=Mode default
+
+mode=default
+type=key
 data=MENU
 event=Mode Menu
 
