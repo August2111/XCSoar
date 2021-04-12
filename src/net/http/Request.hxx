@@ -146,6 +146,13 @@ public:
 		easy.SetRequestBody(data, size);
 	}
 
+	void SetProgress(void* progress_func, void* ptr) {
+		easy.SetNoProgress(false);
+		easy.SetOption(CURLOPT_PROGRESSFUNCTION, progress_func);
+		easy.SetOption(CURLOPT_PROGRESSDATA, ptr);
+	}
+
+
 	void Resume() noexcept;
 
 	/**
