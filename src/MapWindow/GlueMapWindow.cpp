@@ -148,8 +148,9 @@ void
 GlueMapWindow::SuspendThreads()
 {
 #ifndef ENABLE_OPENGL
-  if (draw_thread != nullptr)
-    draw_thread->Suspend();
+    if (draw_thread != nullptr)
+        // ; // August2111 !!!!!!!!!!!!!!!
+        draw_thread->Suspend();
 #endif
 }
 

@@ -148,9 +148,11 @@ Thread::ThreadProc(void *p) noexcept
 DWORD WINAPI
 Thread::ThreadProc(LPVOID lpParameter) noexcept
 {
+#if 1  // August2111 !!!!!!!!!!!!!!!
   Thread *thread = (Thread *)lpParameter;
 
   thread->Run();
+#endif
   return 0;
 }
 
