@@ -93,13 +93,17 @@ Copyright_License {
 #include "Weather/NOAAStore.hpp"
 #include "Plane/PlaneGlue.hpp"
 #include "UIState.hpp"
-#include "Tracking/TrackingGlue.hpp"
 #include "Units/Units.hpp"
 #include "Formatter/UserGeoPointFormatter.hpp"
 #include "thread/Debug.hpp"
 
 #include "lua/StartFile.hpp"
 #include "lua/Background.hpp"
+
+#if defined(HAVE_TRACKING)
+#include "Tracking/TrackingGlue.hpp"
+#include "net/http/Init.hpp"
+#endif
 
 #ifdef ENABLE_OPENGL
 #include "ui/canvas/opengl/Globals.hpp"
@@ -454,7 +458,7 @@ Startup()
 
   PageActions::Update();
 
-#if defined(HAVE_TRACKING)  && !defined(_MSC_VER)  // TODO(August2111)
+#if defined(HAVE_TRACKING) //  && !defined(_MSC_VER)  // TODO(August2111)
   // -> exception in BindMethod.hxx!
   tracking = new TrackingGlue(*asio_thread, *Net::curl);
   tracking->SetSettings(computer_settings.tracking);
