@@ -12,17 +12,29 @@ class ComputerDirectories(object):
         self.link_libs = directories["link_libs"]
 
 
+project = sys.argv[1]
+toolchain = sys.argv[2]
+
+print(project)
+print(toolchain)
+
+os.system("pause")
+
+
 if sys.platform.startswith('win'):
-    toolchain = 'mgw73'
-    # toolchain = 'ninja'
-    # toolchain = 'clang10'
-    toolchain = 'msvc2019'
+    if not toolchain in ['mgw73', 'ninja', 'clang10', 'msvc2019']:
+        toolchain = 'mgw73'
+        # toolchain = 'ninja'
+        # toolchain = 
+        # toolchain = 'msvc2019'
 else:
-    toolchain = 'unix'
+    if not toolchain in ['unix']:
+        toolchain = 'unix'
 
 arguments = []
 arguments.append('XCSoarAug')   # project_name
-arguments.append('master')      # branch
+# arguments.append('master')      # branch
+arguments.append('weglide_msvc')      # branch
 arguments.append(toolchain)     # build-toolchain
 # arguments.append('Arg2')
 # arguments.append('Arg3')
