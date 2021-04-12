@@ -67,7 +67,8 @@ public:
 	CurlRequest(CurlGlobal &_global,
 		    CurlResponseHandler &_handler);
 
-	CurlRequest(CurlGlobal &_global, const char *url,
+	template<typename T>
+	CurlRequest(CurlGlobal &_global, T url,
 		    CurlResponseHandler &_handler)
 		:CurlRequest(_global, _handler) {
 		SetUrl(url);
@@ -112,7 +113,8 @@ public:
 		easy.SetOption(option, value);
 	}
 
-	void SetUrl(const char *url) {
+	template<typename T>
+	void SetUrl(T url) {
 		easy.SetURL(url);
 	}
 

@@ -31,6 +31,7 @@
 #define CURL_EASY_HXX
 
 #include "util/Compiler.h"
+#include "util/ConvertString.hpp"
 
 #include <curl/curl.h>
 
@@ -42,179 +43,188 @@
  * An OO wrapper for a "CURL*" (a libCURL "easy" handle).
  */
 class CurlEasy {
-	CURL *handle = nullptr;
+  CURL *handle = nullptr;
 
 public:
-	/**
-	 * Allocate a new CURL*.
-	 *
-	 * Throws std::runtime_error on error.
-	 */
-	CurlEasy()
-		:handle(curl_easy_init())
-	{
-		if (handle == nullptr)
-			throw std::runtime_error("curl_easy_init() failed");
-	}
+  /**
+   * Allocate a new CURL*.
+   *
+   * Throws std::runtime_error on error.
+   */
+  CurlEasy()
+    :handle(curl_easy_init())
+  {
+    if (handle == nullptr)
+      throw std::runtime_error("curl_easy_init() failed");
+  }
 
-	explicit CurlEasy(const char *url)
-		:CurlEasy() {
-		SetURL(url);
-	}
+  explicit CurlEasy(const char *url)
+    :CurlEasy() {
+    SetURL(url);
+  }
 
-	/**
-	 * Create an empty instance.
-	 */
-	CurlEasy(std::nullptr_t) noexcept:handle(nullptr) {}
+  /**
+   * Create an empty instance.
+   */
+  CurlEasy(std::nullptr_t) noexcept:handle(nullptr) {}
 
-	CurlEasy(CurlEasy &&src) noexcept
-		:handle(std::exchange(src.handle, nullptr)) {}
+  CurlEasy(CurlEasy &&src) noexcept
+    :handle(std::exchange(src.handle, nullptr)) {}
 
-	~CurlEasy() noexcept {
-		if (handle != nullptr)
-			curl_easy_cleanup(handle);
-	}
+  ~CurlEasy() noexcept {
+    if (handle != nullptr)
+      curl_easy_cleanup(handle);
+  }
 
-	operator bool() const noexcept {
-		return handle != nullptr;
-	}
+  operator bool() const noexcept {
+    return handle != nullptr;
+  }
 
-	CurlEasy &operator=(CurlEasy &&src) noexcept {
-		std::swap(handle, src.handle);
-		return *this;
-	}
+  CurlEasy &operator=(CurlEasy &&src) noexcept {
+    std::swap(handle, src.handle);
+    return *this;
+  }
 
-	CURL *Get() noexcept {
-		return handle;
-	}
+  CURL *Get() noexcept {
+    return handle;
+  }
 
-	template<typename T>
-	void SetOption(CURLoption option, T value) {
-		CURLcode code = curl_easy_setopt(handle, option, value);
-		if (code != CURLE_OK)
-			throw std::runtime_error(curl_easy_strerror(code));
-	}
+  template<typename T>
+  void SetOption(CURLoption option, T value) {
+    CURLcode code = curl_easy_setopt(handle, option, value);
+    if (code != CURLE_OK)
+      throw std::runtime_error(curl_easy_strerror(code));
+  }
 
-	void SetPrivate(void *pointer) {
-		SetOption(CURLOPT_PRIVATE, pointer);
-	}
+#ifdef UNICODE
+  void SetOption(CURLoption option, const TCHAR* value) {
+    CURLcode code = curl_easy_setopt(handle, option, WideToACPConverter(value));
+    if (code != CURLE_OK)
+      throw std::runtime_error(curl_easy_strerror(code));
+  }
+#endif
 
-	void SetErrorBuffer(char *buf) {
-		SetOption(CURLOPT_ERRORBUFFER, buf);
-	}
+  void SetPrivate(void *pointer) {
+    SetOption(CURLOPT_PRIVATE, pointer);
+  }
 
-	void SetURL(const char *value) {
-		SetOption(CURLOPT_URL, value);
-	}
+  void SetErrorBuffer(char *buf) {
+    SetOption(CURLOPT_ERRORBUFFER, buf);
+  }
 
-	void SetUserAgent(const char *value) {
-		SetOption(CURLOPT_USERAGENT, value);
-	}
+  template<typename T>
+  void SetURL(T value) {
+    SetOption(CURLOPT_URL, value);
+  }
 
-	void SetRequestHeaders(struct curl_slist *headers) {
-		SetOption(CURLOPT_HTTPHEADER, headers);
-	}
+  void SetUserAgent(const char *value) {
+    SetOption(CURLOPT_USERAGENT, value);
+  }
 
-	void SetBasicAuth(const char *userpwd) {
-		SetOption(CURLOPT_USERPWD, userpwd);
-	}
+  void SetRequestHeaders(struct curl_slist *headers) {
+    SetOption(CURLOPT_HTTPHEADER, headers);
+  }
 
-	void SetUpload(bool value=true) {
-		SetOption(CURLOPT_UPLOAD, (long)value);
-	}
+  void SetBasicAuth(const char *userpwd) {
+    SetOption(CURLOPT_USERPWD, userpwd);
+  }
 
-	void SetNoProgress(bool value=true) {
-		SetOption(CURLOPT_NOPROGRESS, (long)value);
-	}
+  void SetUpload(bool value=true) {
+    SetOption(CURLOPT_UPLOAD, (long)value);
+  }
 
-	void SetNoSignal(bool value=true) {
-		SetOption(CURLOPT_NOSIGNAL, (long)value);
-	}
+  void SetNoProgress(bool value=true) {
+    SetOption(CURLOPT_NOPROGRESS, (long)value);
+  }
 
-	void SetFailOnError(bool value=true) {
-		SetOption(CURLOPT_FAILONERROR, (long)value);
-	}
+  void SetNoSignal(bool value=true) {
+    SetOption(CURLOPT_NOSIGNAL, (long)value);
+  }
 
-	void SetVerifyHost(bool value) {
-		SetOption(CURLOPT_SSL_VERIFYHOST, value ? 2L : 0L);
-	}
+  void SetFailOnError(bool value=true) {
+    SetOption(CURLOPT_FAILONERROR, (long)value);
+  }
 
-	void SetVerifyPeer(bool value) {
-		SetOption(CURLOPT_SSL_VERIFYPEER, (long)value);
-	}
+  void SetVerifyHost(bool value) {
+    SetOption(CURLOPT_SSL_VERIFYHOST, value ? 2L : 0L);
+  }
 
-	void SetConnectTimeout(long timeout) {
-		SetOption(CURLOPT_CONNECTTIMEOUT, timeout);
-	}
+  void SetVerifyPeer(bool value) {
+    SetOption(CURLOPT_SSL_VERIFYPEER, (long)value);
+  }
 
-	void SetTimeout(long timeout) {
-		SetOption(CURLOPT_TIMEOUT, timeout);
-	}
+  void SetConnectTimeout(long timeout) {
+    SetOption(CURLOPT_CONNECTTIMEOUT, timeout);
+  }
 
-	void SetHeaderFunction(size_t (*function)(char *buffer, size_t size,
-						  size_t nitems,
-						  void *userdata),
-			       void *userdata) {
-		SetOption(CURLOPT_HEADERFUNCTION, function);
-		SetOption(CURLOPT_HEADERDATA, userdata);
-	}
+  void SetTimeout(long timeout) {
+    SetOption(CURLOPT_TIMEOUT, timeout);
+  }
 
-	void SetWriteFunction(size_t (*function)(char *ptr, size_t size,
-						 size_t nmemb, void *userdata),
-			      void *userdata) {
-		SetOption(CURLOPT_WRITEFUNCTION, function);
-		SetOption(CURLOPT_WRITEDATA, userdata);
-	}
+  void SetHeaderFunction(size_t (*function)(char *buffer, size_t size,
+            size_t nitems,
+            void *userdata),
+            void *userdata) {
+    SetOption(CURLOPT_HEADERFUNCTION, function);
+    SetOption(CURLOPT_HEADERDATA, userdata);
+  }
 
-	void SetReadFunction(size_t (*function)(char *ptr, size_t size,
-						size_t nmemb, void *userdata),
-			      void *userdata) {
-		SetOption(CURLOPT_READFUNCTION, function);
-		SetOption(CURLOPT_READDATA, userdata);
-	}
+  void SetWriteFunction(size_t (*function)(char *ptr, size_t size,
+            size_t nmemb, void *userdata),
+            void *userdata) {
+    SetOption(CURLOPT_WRITEFUNCTION, function);
+    SetOption(CURLOPT_WRITEDATA, userdata);
+  }
 
-	void SetNoBody(bool value=true) {
-		SetOption(CURLOPT_NOBODY, (long)value);
-	}
+  void SetReadFunction(size_t (*function)(char *ptr, size_t size,
+            size_t nmemb, void *userdata),
+            void *userdata) {
+    SetOption(CURLOPT_READFUNCTION, function);
+    SetOption(CURLOPT_READDATA, userdata);
+  }
 
-	void SetPost(bool value=true) {
-		SetOption(CURLOPT_POST, (long)value);
-	}
+  void SetNoBody(bool value=true) {
+    SetOption(CURLOPT_NOBODY, (long)value);
+  }
 
-	void SetRequestBody(const void *data, size_t size) {
-		SetOption(CURLOPT_POSTFIELDS, data);
-		SetOption(CURLOPT_POSTFIELDSIZE, (long)size);
-	}
+  void SetPost(bool value=true) {
+    SetOption(CURLOPT_POST, (long)value);
+  }
 
-	void SetHttpPost(const struct curl_httppost *post) {
-		SetOption(CURLOPT_HTTPPOST, post);
-	}
+  void SetRequestBody(const void *data, size_t size) {
+    SetOption(CURLOPT_POSTFIELDS, data);
+    SetOption(CURLOPT_POSTFIELDSIZE, (long)size);
+  }
 
-	template<typename T>
-	bool GetInfo(CURLINFO info, T value_r) const noexcept {
-		return ::curl_easy_getinfo(handle, info, value_r) == CURLE_OK;
-	}
+  void SetHttpPost(const struct curl_httppost *post) {
+    SetOption(CURLOPT_HTTPPOST, post);
+  }
 
-	/**
-	 * Returns the response body's size, or -1 if that is unknown.
-	 */
-	gcc_pure
-	int64_t GetContentLength() const noexcept {
-		double value;
-		return GetInfo(CURLINFO_CONTENT_LENGTH_DOWNLOAD, &value)
-			? (int64_t)value
-			: -1;
-	}
+  template<typename T>
+  bool GetInfo(CURLINFO info, T value_r) const noexcept {
+    return ::curl_easy_getinfo(handle, info, value_r) == CURLE_OK;
+  }
 
-	void Perform() {
-		CURLcode code = curl_easy_perform(handle);
-		if (code != CURLE_OK)
-			throw std::runtime_error(curl_easy_strerror(code));
-	}
+  /**
+   * Returns the response body's size, or -1 if that is unknown.
+   */
+  gcc_pure
+  int64_t GetContentLength() const noexcept {
+    double value;
+    return GetInfo(CURLINFO_CONTENT_LENGTH_DOWNLOAD, &value)
+      ? (int64_t)value
+      : -1;
+  }
 
-	bool Unpause() noexcept {
-		return ::curl_easy_pause(handle, CURLPAUSE_CONT) == CURLE_OK;
-	}
+  void Perform() {
+    CURLcode code = curl_easy_perform(handle);
+    if (code != CURLE_OK)
+      throw std::runtime_error(curl_easy_strerror(code));
+  }
+
+  bool Unpause() noexcept {
+    return ::curl_easy_pause(handle, CURLPAUSE_CONT) == CURLE_OK;
+  }
 };
 
 #endif
