@@ -204,3 +204,30 @@ FileToWeGlide::SetWeGlideUploadParam(const uint32_t pid,
 }
 
 //-----------------------------------------------------------------------------
+bool
+FileToWeGlide::DownloadTask(void) {
+  auto settings = CommonInterface::GetComputerSettings().weglide;
+
+  // TODO(August2111): Asking to load the Task with decision
+  // from which pilot!!!
+  uint32_t pilot_id = settings.pilot_id;  // the preset value
+
+  const auto cache_path = MakeLocalPath(_T("task"));
+  NarrowString<0x100> uri;
+  uri.SetASCII(settings.default_url);  // as NarrowString
+  uri.AppendFormat("/task/declaration/%d?cup=false&tsk=true", pilot_id);
+
+  const auto filepath = LocalPath(_T("task/weglide.tsk"));
+  DialogJobRunner runner(UIGlobals::GetMainWindow(), UIGlobals::GetDialogLook(),
+    _("Download Task from WeGlide"), true);
+
+  Net::DownloadToFileJob job(*Net::curl, uri, filepath);
+  bool result = runner.Run(job);
+  if (result) {
+    LogFormat("WeGlide Task downloaded from pilot '%d'!", pilot_id);
+  }
+
+  return result;
+}
+
+//-----------------------------------------------------------------------------

@@ -66,6 +66,7 @@ private:
       CurlGlobal& curl, JobRunner &runner);
   bool Upload2WeGlide(Path path, StaticString<0x1000>* message,const size_t msg_size);
 
+  bool DownloadTask(void);
 };
 
 //-----------------------------------------------------------------------------
