@@ -72,6 +72,9 @@ IGCFileUpload::PostIGCFile(Path igcfile_path)
     weglide.pilot_dob,
     plane.weglide_aircraft_type)) return;
 
+  LogFormat(_T("WeGlide Debug pid: %d"), weglide.pilot_id);
+  LogFormat(_T("WeGlide Debug aid: %d"), plane.weglide_aircraft_type);
+
 #if 1
   DialogJobRunner runner(UIGlobals::GetMainWindow(), UIGlobals::GetDialogLook(),
     _("Download from WeGlide"), true);
@@ -89,6 +92,7 @@ IGCFileUpload::PostIGCFile(Path igcfile_path)
     success = PostFlight.GetWeGlideListItem(weglide.pilot_id,
 #endif
       FileToWeGlide::ENUM_LISTITEM_USER, *Net::curl, runner);
+  LogFormat(_T("WeGlide Debug 3: %d"), success ? 1 : 0);
     if (success)
       success &= PostFlight.GetWeGlideListItem(plane.weglide_aircraft_type,
         FileToWeGlide::ENUM_LISTITEM_AIRCRAFT, *Net::curl, runner);

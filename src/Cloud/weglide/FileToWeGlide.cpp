@@ -62,6 +62,7 @@ bool
 FileToWeGlide::DoUploadToWeGlide(StaticString<0x1000>* msg, const size_t msg_size) {
   StaticString<CURL_MSG_BUF_SIZE> message;
   char curl_msg[CURL_MSG_BUF_SIZE];
+  LogFormat("WeGlide Debug 10:");
   try {
     bool is_local = igcfile_location[0] != L'/';
 #ifdef _WIN32
@@ -70,14 +71,20 @@ FileToWeGlide::DoUploadToWeGlide(StaticString<0x1000>* msg, const size_t msg_siz
     // alternativ:
     is_local &= !(igcfile_location[1] == L':' && igcfile_location[2] == L'/');
 #endif
+   LogFormat("WeGlide Debug 11:");
     auto file = is_local ? LocalPath(igcfile_location) : AllocatedPath(igcfile_location);
     StaticString<MAX_PATH> url(default_url.c_str());
     url += _T("/igcfile");
+   LogFormat("WeGlide Debug 12:");
     strcpy(curl_msg, "Dummy!");  // TODO(August2111): only dummy!
     Net::UploadFileJob job(*Net::curl, url.c_str(), file, curl_msg, sizeof(curl_msg));
+   LogFormat("WeGlide Debug 13:");
     job.AddValue("user_id", pilot_id);
+   LogFormat("WeGlide Debug 14:");
     job.AddValue("date_of_birth", pilot_dob.c_str());
+   LogFormat("WeGlide Debug 15:");
     job.AddValue("aircraft_id", aircraft_type_id);
+   LogFormat("WeGlide Debug 16:");
 
     DialogJobRunner runner(UIGlobals::GetMainWindow(), UIGlobals::GetDialogLook(),
       _("Upload IGC file to WeGlide"), true);
@@ -133,18 +140,27 @@ FileToWeGlide::GetWeGlideListItem(const uint32_t id, const ListItem type,
 {
   bool result = false;
   if (id > 0) { // not a valid pilot or aircraft ID
+  LogFormat(_T("WeGlide Debug 1"));
     std::vector<const TCHAR*> LIST_ITEMS = { _T("user"), _T("aircraft") };
     NarrowString<0x100> uri;
+  LogFormat(_T("WeGlide Debug 2"));
 #ifdef _UNICODE  // better: uri could be TCHAR*
     StaticString<0x100> query_URI;
     query_URI.Format(_T("%s/%s/%d"), default_url, LIST_ITEMS[type], id);
-    uri.SetASCII(query_URI.c_str());  // as NarrowString
+    uri.SetASCII(query_URI);  // as NarrowString
 #else
+  LogFormat(_T("WeGlide Debug 2a: %s"),default_url.c_str());
+  LogFormat(_T("WeGlide Debug 2b: %s"), LIST_ITEMS[type]);
+  LogFormat(_T("WeGlide Debug 2c: %d"), id);
+  LogFormat("%s/%s/%d", default_url.c_str(), LIST_ITEMS[type], id);
+  printf("%s/%s/%d", default_url.c_str(), LIST_ITEMS[type], id);
     uri.Format(_T("%s/%s/%d"), default_url.c_str(), LIST_ITEMS[type], id);
 #endif
+  LogFormat(_T("WeGlide Debug 3"));
 
     char buffer[0x1000];
-    Net::DownloadToBufferJob job(_curl, uri.c_str(), buffer, sizeof(buffer) - 1);
+    Net::DownloadToBufferJob job(_curl, uri, buffer, sizeof(buffer) - 1);
+  LogFormat(_T("WeGlide Debug 4"));
     // job.SetBasicAuth(username, password);
     result = runner.Run(job);
     if (result) {

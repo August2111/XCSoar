@@ -33,7 +33,9 @@ Copyright_License {
 #include "util/StaticString.hxx"
 
 #include <cassert>
-#include <limits.h>
+#ifndef MAX_PATH  // #include <limits.t>?
+# define MAX_PATH  0x200
+#endif
 
 class UploadFileHandler final : public CurlResponseHandler {
   uint8_t* buffer;
@@ -206,7 +208,7 @@ Net::UploadFileJob::UploadFileJob(CurlGlobal& _curl, const TCHAR * _url, Path _p
   curl_formadd(&formpost,
     &lastptr,
     CURLFORM_COPYNAME, "file",
-    CURLFORM_FILE, filename,
+    CURLFORM_FILE, filename.c_str(),
     CURLFORM_CONTENTTYPE, "application/octet-stream",
     CURLFORM_END);
 }
