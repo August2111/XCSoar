@@ -97,16 +97,15 @@ WeGlideConfigPanel::Prepare(ContainerWindow &parent, const PixelRect &rc) noexce
       weglide.enabled == TriState::TRUE,
       this);
 
-#if 0
+#if WEGLIDE_PILOT_ID_AS_TEXT
+  AddText(_("WeGlide Pilot ID"),
+      _("Take this from your WeGlide Profile. Or set to 0 if not used."),
+      weglide.pilot_id);
+#else
   AddInteger(_("WeGlide Pilot ID"),
     _("Take this from your WeGlide Profile. Or set to 0 if not used."),
     _T("%u"), _T("%u"),
     0, 10000, 1,
-    weglide.pilot_id);
-
-#else
-  AddText(_("WeGlide Pilot ID"),
-    _("Take this from your WeGlide Profile. Or set to 0 if not used."),
     weglide.pilot_id);
 #endif
 #if 0  // TODO(August2111): not used up to now

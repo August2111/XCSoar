@@ -31,6 +31,8 @@ Copyright_License {
 #include <cstdint>
 #include <tchar.h>
 
+#define WEGLIDE_PILOT_ID_AS_TEXT  0
+
 /**
  * WeGlide settings
  */
@@ -49,8 +51,13 @@ struct WeGlideSettings {
   StaticString<64> default_url;
 
   StaticString<64> pilot_name;
+#if WEGLIDE_PILOT_ID_AS_TEXT
   StaticString<10>  pilot_id;    //  better: uint32_t 
   StaticString<10>  copilot_id;  //  better: uint32_t 
+#else  // WEGLIDE_PILOT_ID_AS_TEXT
+  uint32_t  pilot_id;
+  uint32_t  copilot_id;
+#endif  // WEGLIDE_PILOT_ID_AS_TEXT
   BrokenDate        pilot_dob;
   BrokenDate        copilot_dob;
   StaticString<20>  pilot_key;
