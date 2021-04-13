@@ -61,7 +61,6 @@ IGCFileUpload::PostIGCFile(Path igcfile_path)
   LogFormat(_T("WeGlide Upload MY_DEBUG ---"));
 #endif // MY_DEBUG
 
-
   FileToWeGlide PostFlight;
 #if WEGLIDE_PILOT_ID_AS_TEXT  // || 1  // TODO(August2111)!!!!
   // StaticString<10>  _pilot_id(_T("511"));

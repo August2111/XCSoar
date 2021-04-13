@@ -47,18 +47,13 @@ TODO(August2111):
 
 #include "UIGlobals.hpp"
 
-#include <curl/curl.h>
-
-
-#define CURL_MSG_BUF_SIZE 0x4000  //  16kB  4096
-
-#define STRNCOPY std::strncpy
+#define CURL_MSG_BUF_SIZE 0x1000  //  4kB
 
 //-----------------------------------------------------------------------------
 // Constructor
 
 FileToWeGlide::FileToWeGlide() {
-  // take it from settings:
+  // take url it from settings:
   default_url = CommonInterface::GetComputerSettings().weglide.default_url;
 }
 
@@ -76,10 +71,10 @@ FileToWeGlide::DoUploadToWeGlide(StaticString<0x1000>* msg, const size_t msg_siz
     is_local &= !(igcfile_location[1] == L':' && igcfile_location[2] == L'/');
 #endif
     auto file = is_local ? LocalPath(igcfile_location) : AllocatedPath(igcfile_location);
-    StaticString<MAX_PATH> url(default_url);
+    StaticString<MAX_PATH> url(default_url.c_str());
     url += _T("/igcfile");
     strcpy(curl_msg, "Dummy!");  // TODO(August2111): only dummy!
-    Net::UploadFileJob job(*Net::curl, url, file, curl_msg, sizeof(curl_msg));
+    Net::UploadFileJob job(*Net::curl, url.c_str(), file, curl_msg, sizeof(curl_msg));
     job.AddValue("user_id", pilot_id);
     job.AddValue("date_of_birth", pilot_dob.c_str());
     job.AddValue("aircraft_id", aircraft_type_id);
@@ -90,7 +85,7 @@ FileToWeGlide::DoUploadToWeGlide(StaticString<0x1000>* msg, const size_t msg_siz
     runner.Run(job);
 
     json_map_t json_map = JsonToMap(boost::json::parse(curl_msg));
-    message.SetASCII(url);
+    message.SetASCII(url.c_str());
     message.append(_T("\n"));
 
     std::vector<const char*> test_lines = { "id", "competition_id", "scoring_date", "registration" };
@@ -143,13 +138,13 @@ FileToWeGlide::GetWeGlideListItem(const uint32_t id, const ListItem type,
 #ifdef _UNICODE  // better: uri could be TCHAR*
     StaticString<0x100> query_URI;
     query_URI.Format(_T("%s/%s/%d"), default_url, LIST_ITEMS[type], id);
-    uri.SetASCII(query_URI);  // as NarrowString
+    uri.SetASCII(query_URI.c_str());  // as NarrowString
 #else
-    uri.Format(_T("%s/%s/%d"), default_url, LIST_ITEMS[type], id);
+    uri.Format(_T("%s/%s/%d"), default_url.c_str(), LIST_ITEMS[type], id);
 #endif
 
     char buffer[0x1000];
-    Net::DownloadToBufferJob job(_curl, uri, buffer, sizeof(buffer) - 1);
+    Net::DownloadToBufferJob job(_curl, uri.c_str(), buffer, sizeof(buffer) - 1);
     // job.SetBasicAuth(username, password);
     result = runner.Run(job);
     if (result) {
@@ -214,14 +209,14 @@ FileToWeGlide::DownloadTask(void) {
 
   const auto cache_path = MakeLocalPath(_T("task"));
   NarrowString<0x100> uri;
-  uri.SetASCII(settings.default_url);  // as NarrowString
+  uri.SetASCII(settings.default_url.c_str());  // as NarrowString
   uri.AppendFormat("/task/declaration/%d?cup=false&tsk=true", pilot_id);
 
   const auto filepath = LocalPath(_T("task/weglide.tsk"));
   DialogJobRunner runner(UIGlobals::GetMainWindow(), UIGlobals::GetDialogLook(),
     _("Download Task from WeGlide"), true);
 
-  Net::DownloadToFileJob job(*Net::curl, uri, filepath);
+  Net::DownloadToFileJob job(*Net::curl, uri.c_str(), filepath);
   bool result = runner.Run(job);
   if (result) {
     LogFormat("WeGlide Task downloaded from pilot '%d'!", pilot_id);
