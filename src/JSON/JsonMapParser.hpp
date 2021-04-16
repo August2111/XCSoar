@@ -21,19 +21,15 @@ Copyright_License {
 }
 */
 
-#ifndef XCSOAR_LUA_CLOUD_HPP
-#define XCSOAR_LUA_CLOUD_HPP
+#ifndef XCSOAR_CLOUD_JSONMAPPARSER_HPP
+#define XCSOAR_CLOUD_JSONMAPPARSER_HPP
 
-struct lua_State;
+#undef Bool  // this makes trouble under LINUX
+#include <boost/json.hpp>
+#include <unordered_map>
+#include <string>
 
-namespace Lua {
+typedef std::unordered_map<std::string, std::string> json_map_t;
+extern json_map_t JsonToMap(boost::json::value json);
 
-/**
- * Provide the Lua table "xcsoar.cloud".
- */
-void
-InitCloud(lua_State *L);
-
-}
-
-#endif  //  XCSOAR_LUA_LCLOUD_HPP
+#endif  // XCSOAR_CLOUD_JSONMAPPARSER_HPP

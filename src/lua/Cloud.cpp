@@ -40,7 +40,7 @@ l_upload2weglide(lua_State* L)
   StaticString<0x100> str;
   // ??? str.SetASCII(luaL_checkstring(L, 1));
   str.SetUTF8(luaL_checkstring(L, 1));
-  IGCupload.PostIGCFile(Path(str));
+  IGCupload.PostIGCFile(Path(str), 0, 0);
   return 0;
 }
 
