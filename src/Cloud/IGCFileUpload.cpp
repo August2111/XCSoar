@@ -43,7 +43,7 @@
 #define MY_DEBUG
 
 void
-IGCFileUpload::PostIGCFile(Path igcfile_path)
+IGCFileUpload::PostIGCFile(Path igcfile_path, uint32_t pilot_id, uint32_t plane_id)
 {
   const ComputerSettings& settings_computer = CommonInterface::GetComputerSettings();
   const Plane& plane = settings_computer.plane;
@@ -61,19 +61,23 @@ IGCFileUpload::PostIGCFile(Path igcfile_path)
   LogFormat(_T("WeGlide Upload MY_DEBUG ---"));
 #endif // MY_DEBUG
 
+  if (pilot_id == 0)
+    pilot_id = weglide.pilot_id;
+  if (plane_id == 0)
+    plane_id = plane.weglide_aircraft_type;
   FileToWeGlide PostFlight;
 #if WEGLIDE_PILOT_ID_AS_TEXT  // || 1  // TODO(August2111)!!!!
   // StaticString<10>  _pilot_id(_T("511"));
   uint32_t pilot_id = 511;  //  std::to_integer(_pilot_id.c_str());
   if (!PostFlight.SetWeGlideUploadParam(pilot_id,
 #else
-  if (!PostFlight.SetWeGlideUploadParam(weglide.pilot_id,
+  if (!PostFlight.SetWeGlideUploadParam(pilot_id,
 #endif
     weglide.pilot_dob,
-    plane.weglide_aircraft_type)) return;
+    plane_id)) return;
 
-  LogFormat(_T("WeGlide Debug pid: %d"), weglide.pilot_id);
-  LogFormat(_T("WeGlide Debug aid: %d"), plane.weglide_aircraft_type);
+  LogFormat(_T("WeGlide Debug pid: %d"), pilot_id);
+  LogFormat(_T("WeGlide Debug aid: %d"), plane_id);
 
 #if 1
   DialogJobRunner runner(UIGlobals::GetMainWindow(), UIGlobals::GetDialogLook(),
@@ -89,12 +93,12 @@ IGCFileUpload::PostIGCFile(Path igcfile_path)
     uint32_t pilot_id = 511;  //  std::to_integer(_pilot_id.c_str());
     success = PostFlight.GetWeGlideListItem(pilot_id,
 #else
-    success = PostFlight.GetWeGlideListItem(weglide.pilot_id,
+    success = PostFlight.GetWeGlideListItem(pilot_id,  //weglide.pilot_id,
 #endif
       FileToWeGlide::ENUM_LISTITEM_USER, *Net::curl, runner);
   LogFormat(_T("WeGlide Debug 3: %d"), success ? 1 : 0);
     if (success)
-      success &= PostFlight.GetWeGlideListItem(plane.weglide_aircraft_type,
+      success &= PostFlight.GetWeGlideListItem(plane_id,  // plane.weglide_aircraft_type,
         FileToWeGlide::ENUM_LISTITEM_AIRCRAFT, *Net::curl, runner);
 
   }
@@ -106,8 +110,8 @@ IGCFileUpload::PostIGCFile(Path igcfile_path)
 
   if (success) {
     _msg.Format(_("Pilot: %s (%d)\nAircraft: %s (%d)"),
-      PostFlight.pilot_name.c_str(), weglide.pilot_id,
-      PostFlight.aircraft_type.c_str(), plane.weglide_aircraft_type);
+      PostFlight.pilot_name.c_str(), pilot_id,
+      PostFlight.aircraft_type.c_str(), plane_id);  // plane.weglide_aircraft_type);
 
     if (ShowMessageBox(_msg, msg_title, MB_YESNO | MB_ICONQUESTION) != IDYES) {
       LogFormat(_T("Abort Upload flight %s"), igcfile_path.c_str());

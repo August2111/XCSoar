@@ -31,6 +31,8 @@ Copyright_License {
 #include "net/http/ToBuffer.hpp"
 #include "Job/Runner.hpp"
 
+#include <stdint.h>
+
 
 class IGCFileUpload
 {
@@ -51,7 +53,7 @@ public:
 
   ~IGCFileUpload() {}
 
-  void PostIGCFile(Path path);
+  void PostIGCFile(Path path, uint32_t pilot_id = 0, uint32_t plane_id = 0);
 };
 
 #endif
