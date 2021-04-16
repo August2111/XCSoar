@@ -53,7 +53,7 @@ public:
 
   ~IGCFileUpload() {}
 
-  void PostIGCFile(Path path, uint32_t pilot_id = 0, uint32_t plane_id = 0);
+  void PostIGCFile(Path path, uint32_t pilot_id, uint32_t plane_id);
 };
 
 #endif
