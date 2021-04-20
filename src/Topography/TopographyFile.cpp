@@ -64,7 +64,8 @@ TopographyFile::TopographyFile(zzip_dir *_dir, const char *filename,
   center = file_bounds.GetCenter();
 
   shapes.ResizeDiscard(file.numshapes);
-  std::fill(shapes.begin(), shapes.end(), ShapeList(nullptr));
+  ShapeList shape(nullptr);  // TODO(August2111): error!
+  std::fill(shapes.begin(), shapes.end(), shape);  //  ShapeList(nullptr));
 
   if (dir != nullptr)
     ++dir->refcount;
