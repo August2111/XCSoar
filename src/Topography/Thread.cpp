@@ -67,7 +67,7 @@ TopographyThread::Tick() noexcept
 {
   // TODO: call only once
   SetIdlePriority();
-
+#if 0 // TODO(August2111) !!!!!!!!!!!!!!!
   bool again = true;
   while (next_projection.IsValid() && again && !IsStopped()) {
     const WindowProjection projection = next_projection;
@@ -81,4 +81,5 @@ TopographyThread::Tick() noexcept
     const ScopeUnlock unlock(mutex);
     callback();
   }
+#endif
 }
