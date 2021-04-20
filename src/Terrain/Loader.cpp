@@ -59,7 +59,8 @@ TerrainLoader::SkipMarkerSegment(long file_offset) const
   while (segment->IsTileSegment() &&
          !raster_tile_cache.tiles.GetLinear(segment->tile).IsRequested()) {
     ++segment;
-    if (segment >= raster_tile_cache.segments.end())
+// TODO(August2111):    if (segment >= raster_tile_cache.segments.end())
+    if (segment == &(*raster_tile_cache.segments.end()))
       /* last segment is hidden; shouldn't happen either, because we
          expect EOC there */
       break;
