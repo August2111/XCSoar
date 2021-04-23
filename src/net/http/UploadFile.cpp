@@ -32,6 +32,8 @@ Copyright_License {
 #include "util/ScopeExit.hxx"
 #include "util/StaticString.hxx"
 
+#include "LogFile.hpp"
+
 #include <cassert>
 #ifndef MAX_PATH  // #include <limits.t>?
 # define MAX_PATH  0x200
@@ -202,15 +204,19 @@ Net::UploadFileJob::UploadFileJob(CurlGlobal& _curl, const TCHAR * _url, Path _p
   char* _buffer, size_t _buffer_size)
   :curl(_curl), url(_url), path(_path), buffer(_buffer), buffer_size(_buffer_size)
 {
+
   NarrowString<MAX_PATH> filename;
   filename.SetASCII(path.c_str());
+  LogFormat("UploadFile: %s", filename.c_str());
   curl_formfree(formpost);
   curl_formadd(&formpost,
     &lastptr,
     CURLFORM_COPYNAME, "file",
-    CURLFORM_FILE, filename.c_str(),
+    // only test!! CURLFORM_FILE, filename.c_str(),
+    CURLFORM_FILE, "/storage/emulated/0/XCSoarData/flights/2020-09-19_Twin/09JGE512.IGC",
     CURLFORM_CONTENTTYPE, "application/octet-stream",
     CURLFORM_END);
+  LogFormat("UploadFile: %s", "/storage/emulated/0/XCSoarData/flights/2020-09-19_Twin/09JGE512.IGC");
 }
 
 
