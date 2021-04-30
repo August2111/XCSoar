@@ -62,7 +62,7 @@ public:
 
 private:
   /* methods from DataFieldListener */
-  void OnModified(DataField &df) override;
+  void OnModified(DataField &df) noexcept override;
 };
 
 void
@@ -76,7 +76,7 @@ WeGlideConfigPanel::SetEnabled(bool enabled)
 }
 
 void
-WeGlideConfigPanel::OnModified(DataField &df)
+WeGlideConfigPanel::OnModified(DataField &df) noexcept
 {
   if (IsDataField(WeGlideEnabled, df)) {
     const DataFieldBoolean &dfb = (const DataFieldBoolean &)df;
