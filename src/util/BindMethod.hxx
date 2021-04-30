@@ -44,10 +44,10 @@ template<typename S=void()>
 class BoundMethod;
 
 template<typename R,
-	bool NoExcept,
+//	/* bool NoExcept, */
 	typename... Args>
-class BoundMethod<R(Args...) noexcept(NoExcept)> {
-	typedef R (*function_pointer)(void *instance, Args... args) noexcept(NoExcept);
+class BoundMethod<R(Args...) noexcept/* (NoExcept) */> {
+	typedef R (*function_pointer)(void *instance, Args... args) noexcept/* (NoExcept) */;
 
 	void *instance_;
 	function_pointer function;
@@ -94,10 +94,10 @@ template<typename T, typename S>
 struct MethodWithSignature;
 
 template<typename T,
-	 bool NoExcept,
+//	 /* bool NoExcept, */
 	 typename R, typename... Args>
-struct MethodWithSignature<T, R(Args...) noexcept(NoExcept)> {
-	typedef R (T::*method_pointer)(Args...) noexcept(NoExcept);
+struct MethodWithSignature<T, R(Args...) noexcept/* (NoExcept) */> {
+	typedef R (T::*method_pointer)(Args...) noexcept/* (NoExcept) */;
 };
 
 /**
@@ -108,8 +108,8 @@ struct MethodWithSignature<T, R(Args...) noexcept(NoExcept)> {
 template<typename M>
 struct MethodSignatureHelper;
 
-template<typename R, bool NoExcept, typename T, typename... Args>
-struct MethodSignatureHelper<R (T::*)(Args...) noexcept(NoExcept)> {
+template<typename R, /* bool NoExcept, */ typename T, typename... Args>
+struct MethodSignatureHelper<R (T::*)(Args...) noexcept/* (NoExcept) */> {
 	/**
 	 * The class which contains the given method (signature).
 	 */
@@ -119,7 +119,7 @@ struct MethodSignatureHelper<R (T::*)(Args...) noexcept(NoExcept)> {
 	 * A function type which describes the "plain" function
 	 * signature.
 	 */
-	typedef R plain_signature(Args...) noexcept(NoExcept);
+	typedef R plain_signature(Args...) noexcept/* (NoExcept) */;
 };
 
 /**
@@ -129,10 +129,10 @@ struct MethodSignatureHelper<R (T::*)(Args...) noexcept(NoExcept)> {
 template<typename S>
 struct MethodWrapperWithSignature;
 
-template<typename R, bool NoExcept, typename... Args>
-struct MethodWrapperWithSignature<R(Args...) noexcept(NoExcept)> {
+template<typename R, /* bool NoExcept, */ typename... Args>
+struct MethodWrapperWithSignature<R(Args...) noexcept/* (NoExcept) */> {
 	typedef R (*function_pointer)(void *instance,
-				      Args...) noexcept(NoExcept);
+				      Args...) noexcept/* (NoExcept) */;
 };
 
 /**
@@ -145,9 +145,9 @@ struct MethodWrapperWithSignature<R(Args...) noexcept(NoExcept)> {
  * @param R the return type
  * @param Args the method arguments
  */
-template<typename T, bool NoExcept, typename M, M method, typename R, typename... Args>
+template<typename T, /* bool NoExcept, */ typename M, M method, typename R, typename... Args>
 struct BindMethodWrapperGenerator2 {
-	static R Invoke(void *_instance, Args... args) noexcept(NoExcept) {
+	static R Invoke(void *_instance, Args... args) noexcept/* (NoExcept) */ {
 		auto &t = *(T *)_instance;
 		return (t.*method)(std::forward<Args>(args)...);
 	}
@@ -164,10 +164,10 @@ struct BindMethodWrapperGenerator2 {
 template<typename T, typename M, M method, typename S>
 struct BindMethodWrapperGenerator;
 
-template<typename T, bool NoExcept,
+template<typename T, /* bool NoExcept, */
 	 typename M, M method, typename R, typename... Args>
-struct BindMethodWrapperGenerator<T, M, method, R(Args...) noexcept(NoExcept)>
-	: BindMethodWrapperGenerator2<T, NoExcept, M, method, R, Args...> {
+struct BindMethodWrapperGenerator<T, M, method, R(Args...) noexcept/* (NoExcept) */>
+	: BindMethodWrapperGenerator2<T, /* NoExcept, */ M, method, R, Args...> {
 };
 
 template<typename T, typename S,
@@ -186,13 +186,13 @@ MakeBindMethodWrapper() noexcept
 template<typename S>
 struct FunctionTraits;
 
-template<typename R, bool NoExcept, typename... Args>
-struct FunctionTraits<R(Args...) noexcept(NoExcept)> {
+template<typename R, /* bool NoExcept, */ typename... Args>
+struct FunctionTraits<R(Args...) noexcept/* (NoExcept) */> {
 	/**
 	 * A function type which describes the "plain" function
 	 * signature.
 	 */
-	typedef R function_type(Args...) noexcept(NoExcept);
+	typedef R function_type(Args...) noexcept/* (NoExcept) */;
 
 	/**
 	 * A function pointer type which describes the "plain"
@@ -211,9 +211,9 @@ struct FunctionTraits<R(Args...) noexcept(NoExcept)> {
  * @param R the return type
  * @param Args the function arguments
  */
-template<bool NoExcept, typename F, F function, typename R, typename... Args>
+template</* bool NoExcept, */ typename F, F function, typename R, typename... Args>
 struct BindFunctionWrapperGenerator2 {
-	static R Invoke(void *, Args... args) noexcept(NoExcept) {
+	static R Invoke(void *, Args... args) noexcept/* (NoExcept) */ {
 		return function(std::forward<Args>(args)...);
 	}
 };
@@ -228,9 +228,9 @@ struct BindFunctionWrapperGenerator2 {
 template<typename S, typename P, P function>
 struct BindFunctionWrapperGenerator;
 
-template<typename P, P function, bool NoExcept, typename R, typename... Args>
-struct BindFunctionWrapperGenerator<R(Args...) noexcept(NoExcept), P, function>
-	: BindFunctionWrapperGenerator2<NoExcept, P, function, R, Args...> {
+template<typename P, P function, /* bool NoExcept, */ typename R, typename... Args>
+struct BindFunctionWrapperGenerator<R(Args...) noexcept/* (NoExcept) */, P, function>
+	: BindFunctionWrapperGenerator2</*NoExcept, */ P, function, R, Args...> {
 };
 
 template<typename T, typename T::pointer function>
