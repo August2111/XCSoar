@@ -2,8 +2,15 @@
 set(CANVAS_SRC_DIR "ui/canvas")  # branch cmake!!!
 set(WINDOW_SRC_DIR "ui/window")
 set(EVENT_SRC_DIR "ui/event")
+set(CONTROL_SRC_DIR "ui/control")
 
 set(ui_SOURCES
+          ${CONTROL_SRC_DIR}/ProgressBar.hpp
+          ${CONTROL_SRC_DIR}/ProgressBar.cpp
+          ${CONTROL_SRC_DIR}/TerminalWindow.hpp
+          ${CONTROL_SRC_DIR}/TerminalWindow.cpp
+          ${CONTROL_SRC_DIR}/LargeTextWindow.hpp
+          
           ${CANVAS_SRC_DIR}/AnyCanvas.hpp
           ${CANVAS_SRC_DIR}/Bitmap.hpp
           ${CANVAS_SRC_DIR}/Brush.hpp
@@ -139,6 +146,7 @@ elseif(WIN32)  # GDI
               ${WINDOW_SRC_DIR}/gdi/SingleWindow.cpp
               ${WINDOW_SRC_DIR}/gdi/TopWindow.cpp
               ${WINDOW_SRC_DIR}/gdi/Window.cpp
+              ${CONTROL_SRC_DIR}/gdi/LargeTextWindow.cpp
       )
     else()
       list(APPEND ui_SOURCES  XXX)
