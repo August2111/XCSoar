@@ -614,7 +614,11 @@ public:
    * @return number of optional start poitns
    */
   [[gnu::pure]]
+#ifdef _MSC_VER
+  size_t GetOptionalStartPointCount() const {
+#else
   unsigned GetOptionalStartPointCount() const {
+#endif
     return optional_start_points.size();
   }
 
@@ -681,7 +685,11 @@ public:
 
 public:
   /* virtual methods from class TaskInterface */
+#ifdef _MSC_VER
+  unsigned /* size_t */ TaskSize() const noexcept override {
+#else
   unsigned TaskSize() const noexcept override {
+#endif
     return task_points.size();
   }
 
