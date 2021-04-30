@@ -308,6 +308,12 @@ type=gesture
 data=LDRDL
 event=Status all
 
+# gesture August2111!
+mode=default
+type=gesture
+data=DRUL
+event=QuickMenu
+
 ###
 
 mode=default
