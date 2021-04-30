@@ -66,7 +66,9 @@ public:
 		:mask((ToMask(args) | ...)) {}
 
 	constexpr EnumBitSet(const EnumBitSet &) noexcept = default;
+#ifndef  _MSC_VER  // not possible with MSVC
 	constexpr EnumBitSet(EnumBitSet &) noexcept = default;
+#endif
 	constexpr EnumBitSet(EnumBitSet &&) noexcept = default;
 
 	constexpr EnumBitSet &operator=(const EnumBitSet &) noexcept = default;
