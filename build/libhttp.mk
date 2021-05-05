@@ -9,6 +9,7 @@ LIBHTTP_SOURCES = \
 	$(SRC)/net/http/ToStream.cpp \
 	$(SRC)/net/http/ToFile.cpp \
 	$(SRC)/net/http/ToBuffer.cpp \
+	$(SRC)/net/http/UploadFile.cpp \
 	$(SRC)/net/http/Multi.cxx \
 	$(SRC)/net/http/FormData.cpp \
 	$(SRC)/net/http/Request.cxx \
