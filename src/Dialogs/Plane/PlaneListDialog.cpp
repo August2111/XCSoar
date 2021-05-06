@@ -42,6 +42,7 @@ Copyright_License {
 #include "Interface.hpp"
 #include "Language/Language.hpp"
 #include "util/StringAPI.hxx"
+#include "Cloud/weglide/WeGlideServer.hpp"
 
 #include <vector>
 #include <cassert>
@@ -152,10 +153,18 @@ PlaneListWidget::CreateButtons(WidgetDialog &dialog)
 void
 PlaneListWidget::Prepare(ContainerWindow &parent, const PixelRect &rc) noexcept
 {
-  const DialogLook &look = UIGlobals::GetDialogLook();
+  ComputerSettings& settings = CommonInterface::SetComputerSettings();
+
+  const DialogLook& look = UIGlobals::GetDialogLook();
   CreateList(parent, look, rc,
-             row_renderer.CalculateLayout(*look.list.font_bold,
-                                          look.small_font));
+    row_renderer.CalculateLayout(*look.list.font_bold,
+      look.small_font));
+  if (settings.weglide.enabled) {
+    char buffer[0x10000];  // > 42kB - the size of this list at 2021-05-01!
+    if (WeGlideServer().DownloadGliderList(buffer, sizeof(buffer))) {
+
+    }
+  }
   UpdateList();
 }
 
