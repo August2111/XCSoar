@@ -227,7 +227,9 @@ XCSOAR_SOURCES := \
 	$(SRC)/Atmosphere/Pressure.cpp \
 	$(SRC)/Atmosphere/AirDensity.cpp \
 	$(SRC)/Atmosphere/CuSonde.cpp \
+	$(SRC)/Cloud/IGCFileUpload.cpp \
 	$(SRC)/Cloud/weglide/WeGlideSettings.cpp \
+	$(SRC)/Cloud/weglide/WeGlideServer.cpp \
 	$(SRC)/Computer/ClimbAverageCalculator.cpp \
 	$(SRC)/Computer/ConditionMonitor/ConditionMonitor.cpp \
 	$(SRC)/Computer/ConditionMonitor/ConditionMonitorAATTime.cpp \
@@ -805,7 +807,7 @@ XCSOAR_DEPENDS = GETTEXT PROFILE \
 	LUA \
 	SHAPELIB ZZIP \
 	LIBNET TIME OS THREAD \
-	UTIL GEO MATH
+	UTIL GEO MATH JSON
 
 ifeq ($(TARGET_IS_DARWIN),y)
 XCSOAR_LDLIBS += -framework CoreLocation
