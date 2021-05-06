@@ -11,6 +11,8 @@ CXXFLAGS += -Wvla
 # disable some warnings, we're not ready for them yet
 CXXFLAGS += -Wno-unused-parameter
 CXXFLAGS += -Wno-missing-field-initializers 
+# disabled by August2111 (Json standalone):
+CXXFLAGS += -Wno-cpp 
 CXXFLAGS += -Wcast-align
 
 # plain C warnings
