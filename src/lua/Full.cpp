@@ -43,6 +43,7 @@ Copyright_License {
 #include "Tracking.hpp"
 #include "Replay.hpp"
 #include "InputEvent.hpp"
+#include "Cloud.hpp"
 
 lua_State *
 Lua::NewFullState()
@@ -64,6 +65,7 @@ Lua::NewFullState()
   InitTracking(L);
   InitReplay(L);
   InitInputEvent(L);
+  InitCloud(L);
 
   {
     SetPackagePath(L,
