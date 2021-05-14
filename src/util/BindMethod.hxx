@@ -145,9 +145,18 @@ struct MethodWrapperWithSignature<R(Args...) noexcept/* (NoExcept) */> {
  * @param R the return type
  * @param Args the method arguments
  */
-template<typename T, /* bool NoExcept, */ typename M, M method, typename R, typename... Args>
+#ifndef _MSC_VER
+#else  //  _MSC_VER
+#endif
+#ifndef _MSC_VER
+template<typename T, bool NoExcept, typename M, M method, typename R, typename... Args>
 struct BindMethodWrapperGenerator2 {
-	static R Invoke(void *_instance, Args... args) noexcept/* (NoExcept) */ {
+	static R Invoke(void *_instance, Args... args) noexcept(NoExcept) {
+#else  //  _MSC_VER
+template<typename T, typename M, M method, typename R, typename... Args>
+struct BindMethodWrapperGenerator2 {
+	static R Invoke(void *_instance, Args... args) noexcept {
+#endif
 		auto &t = *(T *)_instance;
 		return (t.*method)(std::forward<Args>(args)...);
 	}
@@ -164,10 +173,17 @@ struct BindMethodWrapperGenerator2 {
 template<typename T, typename M, M method, typename S>
 struct BindMethodWrapperGenerator;
 
-template<typename T, /* bool NoExcept, */
+#ifndef _MSC_VER
+template<typename T, bool NoExcept,
 	 typename M, M method, typename R, typename... Args>
-struct BindMethodWrapperGenerator<T, M, method, R(Args...) noexcept/* (NoExcept) */>
-	: BindMethodWrapperGenerator2<T, /* NoExcept, */ M, method, R, Args...> {
+struct BindMethodWrapperGenerator<T, M, method, R(Args...) noexcept(NoExcept)>
+	: BindMethodWrapperGenerator2<T, NoExcept, M, method, R, Args...> {
+#else  //  _MSC_VER
+template<typename T,
+	 typename M, M method, typename R, typename... Args>
+struct BindMethodWrapperGenerator<T, M, method, R(Args...) noexcept>
+	: BindMethodWrapperGenerator2<T, M, method, R, Args...> {
+#endif
 };
 
 template<typename T, typename S,
@@ -186,19 +202,32 @@ MakeBindMethodWrapper() noexcept
 template<typename S>
 struct FunctionTraits;
 
-template<typename R, /* bool NoExcept, */ typename... Args>
-struct FunctionTraits<R(Args...) noexcept/* (NoExcept) */> {
+#ifndef _MSC_VER
+template<typename R, bool NoExcept, typename... Args>
+struct FunctionTraits<R(Args...) noexcept(NoExcept)> {
+#else  //  _MSC_VER
+template<typename R, typename... Args>
+struct FunctionTraits<R(Args...) noexcept> {
+#endif
 	/**
 	 * A function type which describes the "plain" function
 	 * signature.
 	 */
-	typedef R function_type(Args...) noexcept/* (NoExcept) */;
+#ifndef _MSC_VER
+	typedef R function_type(Args...) noexcept(NoExcept);
+#else  //  _MSC_VER
+	typedef R function_type(Args...) noexcept;
+#endif
 
 	/**
 	 * A function pointer type which describes the "plain"
 	 * function signature.
 	 */
+#ifndef _MSC_VER
 	typedef R (*pointer)(Args...) noexcept(NoExcept);
+#else  //  _MSC_VER
+	typedef R (*pointer)(Args...) noexcept;
+#endif
 };
 
 /**
@@ -211,9 +240,15 @@ struct FunctionTraits<R(Args...) noexcept/* (NoExcept) */> {
  * @param R the return type
  * @param Args the function arguments
  */
-template</* bool NoExcept, */ typename F, F function, typename R, typename... Args>
+#ifndef _MSC_VER
+template<bool NoExcept, typename F, F function, typename R, typename... Args>
 struct BindFunctionWrapperGenerator2 {
-	static R Invoke(void *, Args... args) noexcept/* (NoExcept) */ {
+	static R Invoke(void *, Args... args) noexcept(NoExcept) {
+#else  //  _MSC_VER
+template<typename F, F function, typename R, typename... Args>
+struct BindFunctionWrapperGenerator2 {
+	static R Invoke(void *, Args... args) noexcept {
+#endif
 		return function(std::forward<Args>(args)...);
 	}
 };
@@ -228,10 +263,17 @@ struct BindFunctionWrapperGenerator2 {
 template<typename S, typename P, P function>
 struct BindFunctionWrapperGenerator;
 
-template<typename P, P function, /* bool NoExcept, */ typename R, typename... Args>
-struct BindFunctionWrapperGenerator<R(Args...) noexcept/* (NoExcept) */, P, function>
-	: BindFunctionWrapperGenerator2</*NoExcept, */ P, function, R, Args...> {
+#ifndef _MSC_VER
+template<typename P, P function, bool NoExcept, typename R, typename... Args>
+struct BindFunctionWrapperGenerator<R(Args...) noexcept(NoExcept), P, function>
+	: BindFunctionWrapperGenerator2<NoExcept, P, function, R, Args...> {
 };
+#else  //  _MSC_VER
+template<typename P, P function, typename R, typename... Args>
+struct BindFunctionWrapperGenerator<R(Args...) noexcept, P, function>
+	: BindFunctionWrapperGenerator2< P, function, R, Args...> {
+};
+#endif
 
 template<typename T, typename T::pointer function>
 typename MethodWrapperWithSignature<typename T::function_type>::function_pointer
