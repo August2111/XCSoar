@@ -1,3 +1,19 @@
+Version 7.11 - not yet released
+* cloud server
+  - upload IGC Files to cloud server (starting with WeGlide)
+* logger
+  - automatic upload after downloding flight from logger (setable)
+    with pilot id (Profile) and glider id (Airplane setting)
+* user interface
+  - add a simple date picker for date of birth selection
+  - add a integer selection picker for large numbers
+  - new Settings "WeGlide Name, PilotID, DayOfBirth, Password"
+  - new Glider setting "WeGlide GliderID"
+* internet
+  - add functionality for uploading files
+* task
+  - add WeGlide declared task download
+
 Version 7.10 - 2021/07/09
 * weather
   - work around connection problems to NOAA server (for METAR/TAF)
