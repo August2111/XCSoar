@@ -30,6 +30,7 @@ Copyright_License {
 #include "Dialogs/TextEntry.hpp"
 #include "Dialogs/TimeEntry.hpp"
 #include "Dialogs/GeoPointEntry.hpp"
+#include "Dialogs/NumberEntry.hpp"
 
 bool
 EditDataFieldDialog(const TCHAR *caption, DataField &df,
@@ -56,6 +57,12 @@ EditDataFieldDialog(const TCHAR *caption, DataField &df,
       return false;
 
     gdf.ModifyValue(value);
+    return true;
+  } else if (df.GetType() == DataField::Type::NUMBER) {
+    unsigned int value = df.GetAsInteger();
+    if (!NumberEntryDialog(caption, value, 5))  // 5 columns
+        return false;
+    df.SetAsInteger(value);
     return true;
   } else {
     const TCHAR *value = df.GetAsString();
