@@ -26,11 +26,13 @@ Copyright_License {
 #include "Form/DataField/GeoPoint.hpp"
 #include "Form/DataField/RoughTime.hpp"
 #include "Form/DataField/Prefix.hpp"
+#include "Form/DataField/Date.hpp"
 #include "ComboPicker.hpp"
 #include "Dialogs/TextEntry.hpp"
 #include "Dialogs/TimeEntry.hpp"
 #include "Dialogs/GeoPointEntry.hpp"
 #include "Dialogs/NumberEntry.hpp"
+#include "Dialogs/DateEntry.hpp"
 
 bool
 EditDataFieldDialog(const TCHAR *caption, DataField &df,
@@ -58,11 +60,13 @@ EditDataFieldDialog(const TCHAR *caption, DataField &df,
 
     gdf.ModifyValue(value);
     return true;
-  } else if (df.GetType() == DataField::Type::NUMBER) {
-    unsigned int value = df.GetAsInteger();
-    if (!NumberEntryDialog(caption, value, 5))  // 5 columns
-        return false;
-    df.SetAsInteger(value);
+  } else if (df.GetType() == DataField::Type::DATE) {
+    DataFieldDate &dfd = reinterpret_cast<DataFieldDate &>(df);
+    BrokenDate date = dfd.GetValue();
+    if (!DateEntryDialog(caption, date, true))
+      return false;
+
+    dfd.SetValue(date);
     return true;
   } else {
     const TCHAR *value = df.GetAsString();
