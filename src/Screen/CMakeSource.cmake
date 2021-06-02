@@ -111,13 +111,13 @@ list(APPEND Screen_SOURCES
   Debug.cpp
 
   Layout.cpp
-  ProgressBar.cpp
-  TerminalWindow.cpp
+#  ProgressBar.cpp
+#  TerminalWindow.cpp
 
 )
 
 if(USE_GDI)
-  list(APPEND Screen_SOURCES GDI/LargeTextWindow.cpp)
+  # list(APPEND Screen_SOURCES GDI/LargeTextWindow.cpp)
 else()
   ## list(APPEND Screen_SOURCES Custom/LargeTextWindow.cpp)
 endif()

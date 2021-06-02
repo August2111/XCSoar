@@ -14,6 +14,9 @@ set(net_SOURCES
 )
 list(APPEND net_SOURCES
         net/http/DownloadManager.cpp
+        net/http/Progress.cpp
+        net/http/OutputStreamHandler.cxx
+        net/http/ToStream.cpp
         net/http/ToFile.cpp
         net/http/ToBuffer.cpp
         net/http/UploadFile.cpp

@@ -19,6 +19,7 @@ set(Form_SOURCES
         Form/DataField/RoughTime.cpp
         Form/DataField/String.cpp
         Form/DataField/Time.cpp
+        Form/DataField/Date.cpp
         Form/DigitEntry.cpp
         Form/Draw.cpp
         Form/Edit.cpp
@@ -32,4 +33,9 @@ set(Form_SOURCES
         Form/TabDisplay.cpp
         Form/TabMenuDisplay.cpp
 )
+
+set(SCRIPT_FILES
+        CMakeSource.cmake
+)
+
 

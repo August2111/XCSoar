@@ -119,6 +119,7 @@ set(Dialogs_SOURCES
         Dialogs/Task/Widgets/SectorZoneEditWidget.cpp
         Dialogs/TextEntry.cpp
         Dialogs/TimeEntry.cpp
+        Dialogs/DateEntry.cpp
         Dialogs/TouchTextEntry.cpp
         Dialogs/Tracking/CloudEnableDialog.cpp
         Dialogs/Traffic/FlarmTrafficDetails.cpp

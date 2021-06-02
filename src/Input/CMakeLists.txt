@@ -58,11 +58,11 @@ add_custom_command(TARGET ${TARGET_NAME} PRE_BUILD
 
        COMMAND perl tools/Char2GCE.pl    src/Input/InputQueue.hpp >output/include/InputEvents_Char2GCE.cpp
        COMMAND perl tools/Char2NE.pl     src/Input/InputQueue.hpp >output/include/InputEvents_Char2NE.cpp
-       COMMAND perl tools/Text2Event.pl  src/Input/InputQueue.hpp >output/include/InputEvents_Text2Event.cpp
-       COMMAND perl tools/Text2GCE.pl    src/Input/InputQueue.hpp >output/include/InputEvents_Text2GCE.cpp
+       COMMAND perl tools/Text2Event.pl  src/Input/InputEvents.hpp >output/include/InputEvents_Text2Event.cpp
+       # COMMAND perl tools/Text2GCE.pl    src/Input/InputQueue.hpp >output/include/InputEvents_Text2GCE.cpp
        COMMAND perl tools/Text2NE.pl     src/Input/InputQueue.hpp >output/include/InputEvents_Text2NE.cpp
        COMMAND perl tools/xci2cpp.pl     Data/Input/default.xci  >output/include/InputEvents_default.cpp
-       DEPENDS src/Input/InputQueue.hpp 
+       DEPENDS src/Input/InputQueue.hpp src/Input/InputEvents.hpp Data/Input/default.xci 
        WORKING_DIRECTORY ${PROJECTGROUP_SOURCE_DIR}
 )
 
