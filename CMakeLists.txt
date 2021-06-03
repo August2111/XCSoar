@@ -8,8 +8,12 @@ message(STATUS "*** PROJECTGROUP_BINARY_DIR = '${PROJECTGROUP_BINARY_DIR}'")
 
 get_filename_component(PROJECT_NAME ${CMAKE_CURRENT_BINARY_DIR} NAME)
 set (PROJECT_NAME "XCSoar-${PROJECT_NAME}")
-project(${PROJECT_NAME})      # dev_7.0)
-set(TARGET_NAME XCSoarAug)  # hardcoded
+set (PROJECT_NAME "XCSoar-August2111")
+project(${PROJECT_NAME})
+set(TARGET_NAME XCSoarAug)
+
+include(build/cmake/xcsoar.cmake)
+add_subdirectory(build/cmake)
 
 get_filename_component(OUTPUT output ABSOLUTE)
 
@@ -697,3 +701,8 @@ if (OFF)  # only if to build
     # missing: add_dependencies(${TARGET_NAME} boost)
     # missing: add_dependencies(${TARGET_NAME} xmlparser)
 endif()
+# Test-Folder !!!!
+#=============================
+    add_subdirectory(test/src)
+    message(STATUS "### Test  =====================")
+

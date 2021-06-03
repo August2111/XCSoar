@@ -34,3 +34,6 @@ build/local-config.mk
 *.bak
 .*.swp
 /Compile-XCSoar.cmd
+/git_update.cmd
+/Data/Input/default - Kopie.xci
+/.august
