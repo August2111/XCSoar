@@ -193,6 +193,17 @@ event=Mode default
 
 mode=default
 type=key
+data=F9
+event=UploadIGCFile default
+event=Mode default
+
+mode=default
+type=key
+data=F11
+event=RunLuaFile
+
+mode=default
+type=key
 data=MENU
 event=Mode Menu
 
