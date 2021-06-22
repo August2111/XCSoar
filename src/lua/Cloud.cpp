@@ -10,9 +10,9 @@ extern "C" {
 #include <lauxlib.h>
 }
 
-
 static int
 l_cloud_index(lua_State *L) {
+#if 0
   const WeGlideSettings& setting =
     CommonInterface::GetComputerSettings().weglide;
 
@@ -21,17 +21,19 @@ l_cloud_index(lua_State *L) {
     return 0;
   else if (StringIsEqual(name, "pilot_name")) {
     Lua::Push(L, setting.pilot_name);
-  }
-  else
+  } else if (StringIsEqual(name, "upload2weglide")) {
+    Lua::Push(L, setting.pilot_name);
+  } else if (StringIsEqual(name, "task_download")) {
+    Lua::Push(L, setting.pilot_name);
+  } else
     return 0;
+#endif
 
   return 1;
 }
 
-
 static int
-l_igcfile_upload(lua_State *L)
-{
+l_igcfile_upload(lua_State *L) {
   if (lua_gettop(L) == 0 || lua_gettop(L) > 5)
     return luaL_error(L, "Invalid parameters");
   IGCFileUpload IGCupload(IGCFileUpload::NONE);
@@ -62,14 +64,25 @@ l_igcfile_upload(lua_State *L)
   return 0;
 }
 
+
+#include "Cloud/weglide/WeGlideServer.hpp"
+static int l_task_download(lua_State *L) {
+  if (lua_gettop(L) > 1)
+    return luaL_error(L, "Invalid parameters");
+  int pilot_id = lua_gettop(L) > 0 ? luaL_checknumber(L, 1) : 0;
+
+  WeGlideServer().DownloadTask(pilot_id);
+  return 0;
+}
+
 static constexpr struct luaL_Reg settings_funcs[] = {
+  {"task_download", l_task_download},
   {"igcfile_upload", l_igcfile_upload},
   {nullptr, nullptr}
 };
 
 void
-Lua::InitCloud(lua_State *L)
-{
+Lua::InitCloud(lua_State *L) {
   lua_getglobal(L, "xcsoar");
   lua_newtable(L);
   lua_newtable(L);
