@@ -750,3 +750,10 @@ InputEvents::eventUploadIGCFile(const TCHAR* misc) {
 
     }
 }
+
+
+
+#include "Cloud/weglide/WeGlideServer.hpp"
+void InputEvents::eventDownloadTask(const TCHAR *misc) {
+  WeGlideServer().DownloadTask(0);
+}
