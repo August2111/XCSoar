@@ -73,6 +73,7 @@ Lookup(const boost::json::value &v, std::size_t i) noexcept
     : nullptr;
 }
 
+#ifdef USE_JSON_TEMPLATE
 template<typename J, typename K, typename... Args>
 [[gnu::pure]]
 static inline const auto *
@@ -83,6 +84,7 @@ Lookup(const J &j, K &&key, Args&&... args)
     ? Lookup(*l, std::forward<Args>(args)...)
     : nullptr;
 }
+#endif  // USE_JSON_TEMPLATE
 
 template<typename... Args>
 [[gnu::pure]]
