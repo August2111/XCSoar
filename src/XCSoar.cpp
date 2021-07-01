@@ -48,6 +48,9 @@ Copyright_License {
 #include "io/async/AsioThread.hpp"
 #include "util/PrintException.hxx"
 
+// August2111 Try to solve the plane.member issue
+#include "Plane/Plane.hpp"
+
 #ifdef ENABLE_SDL
 /* this is necessary on Mac OS X, to let libSDL bootstrap Quartz
    before entering our main() */
@@ -160,6 +163,30 @@ WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 #endif
     CommandLine::Parse(args);
   }
+
+  //-----------------------------------------------
+  // August2111 Try to solve the plane.member issue
+  // This is only a dummy to show if Codacy works correctly ;-)
+  Plane plane = {
+       StaticString<32>(_T("reg")),
+       StaticString<6>(_T("cid")),
+       StaticString<32>(_T("type")),
+       StaticString<32>(_T("polar")),
+       PolarShape(),
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0, // dump_time
+       0, // handicap
+       0
+  };
+
+  if (plane.weglide_glider_type > 0)
+    return -1; 
+  // August2111 Try to solve the plane.member issue
+  //-----------------------------------------------
 
   int ret;
 
