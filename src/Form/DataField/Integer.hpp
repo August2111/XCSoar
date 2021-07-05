@@ -46,8 +46,9 @@ public:
   DataFieldInteger(const TCHAR *edit_format, const TCHAR *display_format,
                    int _min, int _max, int _value, int _step,
                    DataFieldListener *listener=nullptr) noexcept
-    :NumberDataField(Type::INTEGER, true, edit_format, display_format, listener),
-     value(_value), min(_min), max(_max), step(_step) {}
+    :NumberDataField(Type::INTEGER, ((_max-_min)/_step) < 500, edit_format,
+    display_format, listener), value(_value), min(_min), max(_max),
+    step(_step) {}
 
   void Set(int _value) noexcept {
     value = _value;
