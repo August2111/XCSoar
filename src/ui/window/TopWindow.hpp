@@ -65,6 +65,7 @@ class TopCanvas;
 #ifdef USE_GLX
 #include <GL/glx.h>
 #undef NoValue
+#undef Bool  // defined in GL/glx.h, but used later on (json)
 #endif
 #undef Font
 #undef Window
