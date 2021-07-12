@@ -289,7 +289,13 @@ WeGlideServer::DownloadTask(uint32_t pilot_id) {
   if (pilot_id == 0) {
     // maybe select an other id!
     // TODO: Asking to load the Task with decision from which pilot!!!
+    std::unique_ptr<Widget> widget = CreatePCMetWidget();
+
     pilot_id = settings.pilot_id;  // the preset value
+
+    if (!NumberEntryDialog(_("Selection of Pilot"), pilot_id, 5)) // 5 columns!
+      return false;
+
   }
 
   if (pilot_id > 0) {
@@ -306,7 +312,9 @@ WeGlideServer::DownloadTask(uint32_t pilot_id) {
       Net::DownloadToBufferJob job(*Net::curl, uri.c_str(), buffer, sizeof(buffer));
       result = runner.Run(job);
       if (result) {
-        if (StringCompare(buffer, "null")) {  // current task of pilot is empty!
+        if (StringCompare(buffer, "null") == 0) {  // current task of pilot is empty!
+          ShowMessageBox(_("No declared task available for you!"),
+              _("Download Task failed"), MB_OK | MB_ICONINFORMATION);
           result = false;
         } else {
           size_t filesize = job.GetLength();
@@ -314,6 +322,8 @@ WeGlideServer::DownloadTask(uint32_t pilot_id) {
           file.Write(buffer, filesize);
           file.Commit();
           LogFormat("WeGlide Task downloaded from pilot '%d'!", pilot_id);
+          ShowMessageBox(_("Declared task available was downloaded!"),
+                         _("Download Task"), MB_OK | MB_ICONINFORMATION);
         }
       }
     }
