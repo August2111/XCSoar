@@ -53,8 +53,6 @@ DownloadToStream(CurlGlobal &curl, CurlEasy easy,
 {
   assert(easy);
 
-  const Net::ProgressAdapter progress(easy, env);
-
   DownloadToStreamHandler handler(out);
   CurlRequest request(curl, std::move(easy), handler);
   AtScopeExit(&request) { request.StopIndirect(); };
@@ -65,6 +63,8 @@ DownloadToStream(CurlGlobal &curl, CurlEasy easy,
   });
 
   AtScopeExit(&env) { env.SetCancelHandler({}); };
+
+  const Net::ProgressAdapter progress(request.GetEasy(), env);
 
   request.StartIndirect();
   handler.Wait();
