@@ -124,8 +124,10 @@ LogFormat(const TCHAR *Str, ...) noexcept
   TCHAR buf[MAX_PATH];
   va_list ap;
 
+  constexpr size_t size = sizeof(buf) / sizeof(TCHAR);
   va_start(ap, Str);
-  _vstprintf(buf, Str, ap);
+  _vsnwprintf(buf, size, Str, ap);
+//  _vstprintf(buf, Str, ap);
   va_end(ap);
 
   LogString(buf);
