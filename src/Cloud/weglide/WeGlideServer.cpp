@@ -33,12 +33,19 @@
 #include "net/http/ToFile.hpp"
 #include "net/http/UploadFile.hpp"
 #include "Dialogs/JobDialog.hpp"
+#include "Dialogs/NumberEntry.hpp"
 #include "util/StringUtil.hpp"
 #include "util/ConvertString.hpp"
 #include "system/Path.hpp"
 #include "io/FileOutputStream.hxx"
 #include "io/FileReader.hxx"
 #include "Formatter/TimeFormatter.hpp"
+#include "json/ParserOutputStream.hxx"
+
+// TODO(August2111): test only:
+#include "Widget/Widget.hpp"
+#include "Dialogs/Weather/PCMetDialog.hpp"
+
 #include <type_traits>
 
 #include "UIGlobals.hpp"
@@ -52,7 +59,7 @@ std::vector<const char *> WeGlideServer::LIST_ITEMS = {"user", "aircraft"};
 bool
 WeGlideServer::DoUploadToWeGlide(StaticString<CURL_MSG_BUF_SIZE> *msg) {
   StaticString<CURL_MSG_BUF_SIZE> message;
-  char curl_msg[CURL_MSG_BUF_SIZE] = "";
+//  char curl_msg[CURL_MSG_BUF_SIZE] = "";
 //  char curl_msg[0x10] = "";
   auto igc_path = igcfile_location.c_str();
   bool is_local = igc_path[0] != _T('/');
@@ -69,8 +76,9 @@ WeGlideServer::DoUploadToWeGlide(StaticString<CURL_MSG_BUF_SIZE> *msg) {
   NarrowString<0x200> url(settings.default_url);
   url += "/igcfile";
   try {
-    Net::UploadFileJob job(*Net::curl, url.c_str(), file,
-      curl_msg, sizeof(curl_msg));  // the last byte will be the ending 0
+    Json::ParserOutputStream parser;
+    Net::UploadFileJob job(*Net::curl, url.c_str(), file, &parser);
+
     char buffer_string[0x10];
     std::snprintf(buffer_string, sizeof(buffer_string), "%u", pilot_id);
     job.AddPostValue("user_id", buffer_string);
@@ -83,23 +91,16 @@ WeGlideServer::DoUploadToWeGlide(StaticString<CURL_MSG_BUF_SIZE> *msg) {
       UIGlobals::GetDialogLook(), _("Upload IGC file to WeGlide"), true);
 
     if (runner.Run(job)) {
-      auto msg_length = job.GetLength();
-      
-      FileOutputStream response(LocalPath(_T("logs/UploadResponse.json")));
-      response.Write(curl_msg, msg_length);
-      response.Commit();
-      char url_str[0x200];
-      std::snprintf(url_str, sizeof(url_str), "%s", url.c_str());
-      message = string_converter.Convert(url_str);
+      message = string_converter.Convert(url);
       message.append(_T("\n"));
 
-      if (((curl_msg[0] == '[') && (curl_msg[msg_length - 1] == ']')) ||
-          ((curl_msg[0] == '{') && (curl_msg[msg_length - 1] == '}'))) {
-        Json::Reader json(curl_msg);
+//      boost::json::standalone::value json = parser.Finish();
+      //      if (json.kind() != boost::json::kind::null) {
+      Json::Reader json_reader(parser.Finish());
         std::vector<const char *> test_lines = {"id", "competition_id",
                                                 "scoring_date", "registration"};
         for (auto entry : test_lines) {
-          const auto value = json.GetString(entry);
+          const auto value = json_reader.GetString(entry);
 
           if (!value.empty()) {
             char line[0x100];
@@ -118,10 +119,10 @@ WeGlideServer::DoUploadToWeGlide(StaticString<CURL_MSG_BUF_SIZE> *msg) {
         msg->append(string_converter.Convert(msg_str));
         return true;  // false;  // Problems with Exit program?
       }
-    } else {
-      msg->append(_("\nError in DoUploadToWeGlide runner job!"));
-      return true; // false;  // Problems with Exit program?
-    }
+//       } else {
+//         msg->append(_("\nError in DoUploadToWeGlide runner job!"));
+//         return true; // false;  // Problems with Exit program?
+//       }
   }
   catch (const std::exception& e) {
     // Check for errors
@@ -143,8 +144,8 @@ WeGlideServer::DoUploadToWeGlide(StaticString<CURL_MSG_BUF_SIZE> *msg) {
       msg->append(file.c_str());
     } else {
       char msg_str[0x200];
-      std::snprintf(msg_str, sizeof(msg_str) - 1, "\nURL: '%s' response error!",
-          url.c_str());
+      std::snprintf(msg_str, sizeof(msg_str) - 1, "\nURL: '%s' response error!\n%s",
+                    url.c_str(), exc_msg);
       msg->append(string_converter.Convert(msg_str));
     }
     LogFormat(_("WeGlide Upload: %s"), msg->c_str());
@@ -169,13 +170,12 @@ WeGlideServer::GetWeGlideListItem(const uint32_t id, const ListItem type,
     uri.Format("%s/%s/%d", settings.default_url, LIST_ITEMS[type], id);
     LogFormat("GetWeGlideListItem: %s", uri.c_str());
     Net::DownloadToBufferJob job(_curl, uri, buffer, sizeof(buffer) - 1);
-    // job.SetBasicAuth(username, password);  // not necessary up to now!
     result = runner.Run(job);
     if (result) {
       buffer[job.GetLength()] = 0;
 
       try {
-        Json::Reader json(buffer);
+        Json::Reader json_reader(buffer);
 
         // +++ LOG_ONLY:
         AllocatedPath path = LocalPath(_T(""));
@@ -190,19 +190,18 @@ WeGlideServer::GetWeGlideListItem(const uint32_t id, const ListItem type,
         FileOutputStream response(path);
         response.Write(buffer, job.GetLength());
         response.Commit();
-        // --- LOG_ONLY
 
-        if (id == (uint32_t) json.GetInt("id")) {          
+        if (id == (uint32_t) json_reader.GetInt("id")) {          
           // id is identical with answered id!
-          const auto name = json.GetString("name");
-          char name_str[0x100];
-          snprintf(name_str, sizeof(name_str) - 1, "%s", name.c_str());
+          const auto name = json_reader.GetString("name");
           switch (type) {
           case ENUM_LISTITEM_USER:
-            pilot_name = string_converter.Convert(name_str);
+            pilot_name =
+                string_converter.Convert(name);
             break;
           case ENUM_LISTITEM_AIRCRAFT:
-            aircraft_type = string_converter.Convert(name_str);
+            aircraft_type =
+                string_converter.Convert(name);
             break;
           default: break;
           }
