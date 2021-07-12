@@ -28,6 +28,7 @@ Copyright_License {
 #include "util/ReusableArray.hpp"
 
 #include <tchar.h>
+#include <string>
 
 /**
  * Helper which imports strings from a file to `TCHAR*`.
@@ -71,6 +72,12 @@ public:
    * Throws on error.
    */
   TCHAR *Convert(char *src);
+  inline TCHAR *Convert(const char *src) {
+    return Convert(const_cast<char*>(src));
+  }
+  inline TCHAR *Convert(std::string src) {
+    return Convert(const_cast<char*>(src.c_str()));
+  }
 };
 
 #endif
